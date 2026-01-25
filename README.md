@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AI Roundtable
 
 An AI-powered panel discussion simulator that generates dynamic conversations on government jobs and exams in India using multiple distinct personas and text-to-speech synthesis.
@@ -224,3 +225,6 @@ vikki@example.com
 ---
 
 **Built with ❤️ for Indian exam aspirants**
+=======
+# AI-Roundtable
+>>>>>>> 21d688503e141467a065be011ca6fce7686e284b
