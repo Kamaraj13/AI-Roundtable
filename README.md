@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # AI Roundtable
 
 An AI-powered panel discussion simulator that generates dynamic conversations on government jobs and exams in India using multiple distinct personas and text-to-speech synthesis.
@@ -12,24 +11,26 @@ AI Roundtable creates engaging multi-speaker discussions by orchestrating a pane
 - **Fresh Qualifier** - Relatable perspective from recently selected candidates
 - **Citizen** - Critical questioning from an informed citizen perspective
 
-Each episode includes audio synthesis (using macOS `say` command) and JSON-formatted transcripts.
+Each episode includes audio synthesis (cross-platform: macOS `say` or Linux `espeak-ng`) and JSON-formatted transcripts.
 
 ## Features
 
 - ✅ Multi-character AI conversations using Groq API (LLaMA 3.1 8B)
 - ✅ Dynamic prompt engineering with conversation history
-- ✅ Text-to-speech synthesis with accent-appropriate voices
+- ✅ Cross-platform text-to-speech synthesis (macOS & Linux)
 - ✅ FastAPI endpoints for easy integration
 - ✅ Asynchronous request handling
+- ✅ Docker support for Oracle VM deployment
 - ✅ Modular, maintainable codebase
 
 ## Tech Stack
 
 - **LLM**: Groq API (LLaMA 3.1 8B)
 - **Web Framework**: FastAPI + Uvicorn
-- **TTS**: macOS native `say` command
+- **TTS**: macOS native `say` command (or Linux `espeak-ng`)
 - **Async Runtime**: Python asyncio
 - **HTTP Client**: httpx
+- **Containerization**: Docker & Docker Compose
 
 ## Project Structure
 
@@ -40,11 +41,18 @@ ai-roundtable/
 │   ├── groq_client.py     # Groq API integration
 │   ├── moderator.py       # Roundtable orchestration logic
 │   ├── main.py            # FastAPI application
-│   ├── tts_client.py      # Text-to-speech client
+│   ├── tts_client.py      # Cross-platform text-to-speech client
 │   ├── schemas.py         # (Optional) Pydantic models
 │   └── requirements.txt   # Python dependencies
 ├── tts_output/            # Generated audio files
-└── .env                   # Environment variables (create this)
+├── Dockerfile             # Docker container configuration
+├── docker-compose.yml     # Docker Compose setup
+├── setup-vm.sh           # Automated Oracle VM setup
+├── DEPLOYMENT.md         # Oracle VM deployment guide
+├── QUICKSTART.md         # Quick start guide
+├── .env.example          # Environment variables template
+├── .gitignore            # Git ignore rules
+└── README.md             # This file
 ```
 
 ## Installation
@@ -52,15 +60,16 @@ ai-roundtable/
 ### Prerequisites
 
 - Python 3.9+
-- macOS (for native TTS)
-- Groq API key
+- Groq API key (get from https://console.groq.com)
+- For macOS: Native TTS (built-in)
+- For Linux: `espeak-ng` package
 
-### Setup Steps
+### Setup Steps (Local/macOS)
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/ai-roundtable.git
-   cd ai-roundtable
+   git clone https://github.com/Kamaraj13/AI-Roundtable.git
+   cd AI-Roundtable
    ```
 
 2. **Create a virtual environment**
@@ -90,13 +99,26 @@ ai-roundtable/
 
 The API will be available at `http://localhost:8000`
 
+### Setup Steps (Oracle VM - Ubuntu 22.04 aarch64)
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete Oracle VM setup instructions.
+
+Quick setup:
+```bash
+git clone https://github.com/Kamaraj13/AI-Roundtable.git
+cd AI-Roundtable
+chmod +x setup-vm.sh
+./setup-vm.sh
+nano .env  # Add GROQ_API_KEY
+```
+
 ## API Endpoints
 
 ### Health Check
 ```
 GET /
 ```
-Returns: `{"status": "ok"}`
+Response: `{"status": "ok"}`
 
 ### Generate Roundtable Episode
 ```
@@ -125,10 +147,17 @@ POST /generate?tts=true
 }
 ```
 
-## Usage Example
+## Usage Examples
 
 ### cURL
 ```bash
+# Health check
+curl http://localhost:8000/
+
+# Generate without TTS
+curl -X POST http://localhost:8000/generate?tts=false
+
+# Generate with TTS
 curl -X POST http://localhost:8000/generate?tts=true
 ```
 
@@ -161,70 +190,88 @@ TOPIC = "Your custom topic here"
 ```
 
 ### Adding New Characters
-Edit `app/characters.py` and add to the `CHARACTERS` list, then update the system prompt in `moderator.py` to reflect the new count.
-
-### Customizing TTS Voices
-Edit voice mappings in `app/tts_client.py`:
-```python
-VOICE_MAP = {
-    "Indian English": "Veena",  # Change voice here
-    "American": "Alex",
-}
-```
+Edit `app/characters.py` and add to the `CHARACTERS` list, then update the system prompt in `moderator.py`.
 
 ## Deployment
 
-### Docker (For Linux/Cloud VMs)
-
-A Dockerfile will be provided for Oracle VM deployment. Build and run:
+### Docker (Linux/Oracle VM)
 ```bash
-docker build -t ai-roundtable .
-docker run -p 8000:8000 -e GROQ_API_KEY=your_key ai-roundtable
+docker-compose up --build
 ```
 
-### Environment Variables
+### Manual Setup (Ubuntu 22.04)
+```bash
+chmod +x setup-vm.sh
+./setup-vm.sh
+```
 
-Required:
-- `GROQ_API_KEY` - Your Groq API key
-
-Optional:
-- `PORT` - Server port (default: 8000)
-- `HOST` - Server host (default: 0.0.0.0)
+### Production with Supervisor
+See [DEPLOYMENT.md](DEPLOYMENT.md) for full instructions.
 
 ## Troubleshooting
 
 ### "GROQ_API_KEY not set"
-- Ensure `.env` file exists with valid API key
-- Check that `python-dotenv` is installed
+```bash
+# Verify .env exists and has the key
+cat .env
 
-### JSON parsing errors
-- Groq occasionally returns malformed JSON. The system attempts regex recovery.
-- Check `moderator.py:parse_responses()` for details.
+# Make sure python-dotenv is installed
+pip install python-dotenv
+```
 
-### No audio files generated
-- TTS only works on macOS with native `say` command
-- For Linux/VMs, integrate alternative TTS (e.g., Google Cloud TTS, ElevenLabs)
+### JSON parsing errors from Groq
+- Groq occasionally returns malformed JSON
+- The app has built-in retry/recovery logic
+- Check `app/moderator.py:parse_responses()` for details
+
+### TTS not generating audio files
+- **macOS**: Verify `say` command works: `say "test"`
+- **Linux**: Verify espeak-ng: `espeak-ng -v en-in -w test.wav "test"`
+- Check file permissions in `tts_output/` directory
+
+### Port 8000 already in use
+```bash
+lsof -i :8000
+kill -9 <PID>
+```
+
+## Platform Compatibility
+
+| Feature | macOS | Linux | Docker |
+|---------|-------|-------|--------|
+| FastAPI | ✅ | ✅ | ✅ |
+| Groq API | ✅ | ✅ | ✅ |
+| TTS | ✅ (say) | ✅ (espeak-ng) | ✅ (espeak-ng) |
+| Docker | ✅ | ✅ | ✅ |
+| aarch64 Support | ❌ | ✅ | ✅ |
 
 ## Next Steps
 
-- [ ] Implement Linux/cloud-compatible TTS
-- [ ] Add database for episode history
-- [ ] Create web UI for browsing past episodes
-- [ ] Add custom topic/question support
-- [ ] Implement user feedback and episode rating system
-- [ ] Add analytics and usage tracking
+- [ ] Test locally
+- [ ] Deploy to Oracle VM
+- [ ] Add custom topics
+- [ ] Create web UI
+- [ ] Setup monitoring
+- [ ] Add rate limiting
+- [ ] Implement user authentication
+
+## Documentation
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick start guide
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Oracle VM deployment guide
+- **[GIT_SETUP.md](GIT_SETUP.md)** - Git configuration
+- **[TODO.md](TODO.md)** - Setup checklist
 
 ## License
 
 MIT
 
-## Contact
+## Contact & Support
 
-vikki@example.com
+For issues or questions, check the documentation files or open an issue on GitHub.
 
 ---
 
-**Built with ❤️ for Indian exam aspirants**
-=======
-# AI-Roundtable
->>>>>>> 21d688503e141467a065be011ca6fce7686e284b
+**Built with ❤️ for Indian government exam aspirants**
+
+Currently running on: Ubuntu 22.04 aarch64 (Oracle VM)

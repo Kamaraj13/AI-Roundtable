@@ -3,8 +3,10 @@
 import subprocess
 import os
 import time
+import platform
 
-VOICE_MAP = {
+# Voice mapping for espeak-ng (Linux) and say (macOS)
+VOICE_MAP_MACOS = {
     "Indian English": "Veena",
     "American": "Alex",
     "British": "Daniel",
@@ -12,16 +14,45 @@ VOICE_MAP = {
     "default": "Alex",
 }
 
+VOICE_MAP_LINUX = {
+    "Indian English": "en-in",  # Indian English
+    "American": "en-us",         # US English
+    "British": "en-gb",          # British English
+    "Australian": "en-au",       # Australian English
+    "default": "en-us",
+}
+
+def is_macos():
+    return platform.system() == "Darwin"
+
 def resolve_voice(accent):
-    return VOICE_MAP.get(accent, VOICE_MAP["default"])
+    """Get voice identifier based on OS and accent"""
+    if is_macos():
+        return VOICE_MAP_MACOS.get(accent, VOICE_MAP_MACOS["default"])
+    else:
+        return VOICE_MAP_LINUX.get(accent, VOICE_MAP_LINUX["default"])
 
 async def speak_text(text, accent, folder="tts_output"):
+    """Generate speech audio file using platform-appropriate TTS"""
     os.makedirs(folder, exist_ok=True)
-
-    # macOS say command works best with AIFF
-    filename = os.path.join(folder, f"{int(time.time()*1000)}.aiff")
-    voice = resolve_voice(accent)
-
-    subprocess.run(["say", "-v", voice, text, "-o", filename], check=True)
-
+    
+    timestamp = int(time.time() * 1000)
+    
+    if is_macos():
+        # macOS: use native 'say' command with AIFF format
+        filename = os.path.join(folder, f"{timestamp}.aiff")
+        voice = resolve_voice(accent)
+        subprocess.run(["say", "-v", voice, text, "-o", filename], check=True)
+    else:
+        # Linux: use espeak-ng for text-to-speech, output as WAV
+        filename = os.path.join(folder, f"{timestamp}.wav")
+        voice = resolve_voice(accent)
+        
+        # espeak-ng command: espeak-ng -v <lang> -w <output.wav> "text"
+        subprocess.run(
+            ["espeak-ng", "-v", voice, "-w", filename, text],
+            check=True,
+            capture_output=True
+        )
+    
     return filename

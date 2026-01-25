@@ -1,10 +1,13 @@
+# Use official Python image for aarch64 (Ubuntu 22.04)
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies (for TTS alternatives if needed)
+# Install system dependencies for Ubuntu 22.04 aarch64
+# espeak-ng for text-to-speech on Linux
 RUN apt-get update && apt-get install -y \
     espeak-ng \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements
