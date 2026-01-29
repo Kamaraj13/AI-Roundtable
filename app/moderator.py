@@ -33,7 +33,7 @@ async def run_roundtable(tts_enabled=True):
             {"role": "user", "content": prompt},
         ])
 
-        parsed = parse_responses(response)
+        parsed = attach_accents(parse_responses(response))
 
         for entry in parsed:
             tts_file = None
@@ -109,11 +109,15 @@ def parse_responses(text):
     except:
         pass
 
-    # Case 2: Extract JSON from inside backticks or weird wrappers
-    match = re.search(r"\[.*\]", text, re.DOTALL)
-    if match:
+    # Case 2: Extract JSON from inside wrappers / partial output
+    start = text.find("[")
+    end = text.rfind("]")
+    if start != -1:
+        candidate = text[start:end + 1] if end != -1 else text[start:] + "]"
+        # Remove trailing commas before ] or }
+        candidate = re.sub(r",\s*(\]|\})", r"\1", candidate)
         try:
-            return json.loads(match.group(0))
+            return json.loads(candidate)
         except:
             pass
 
@@ -123,6 +127,7 @@ def parse_responses(text):
 
 def attach_accents(data):
     for entry in data:
+        entry.setdefault("accent", "default")
         for c in CHARACTERS:
             if c["name"] == entry["speaker"]:
                 entry["accent"] = c["accent"]

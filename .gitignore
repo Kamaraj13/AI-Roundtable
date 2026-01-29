@@ -39,6 +39,9 @@ env/
 .env.local
 .env.*.local
 
+# SSH keys
+AI‑Roundtable Server
+
 # Logs
 *.log
 logs/
