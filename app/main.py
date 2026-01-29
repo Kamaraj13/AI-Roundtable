@@ -4,7 +4,8 @@ import os
 import logging
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, ORJSONResponse
+from fastapi.middleware.gzip import GZipMiddleware
 from dotenv import load_dotenv
 from apscheduler.schedulers.background import BackgroundScheduler
 from app.moderator import run_roundtable
@@ -13,12 +14,21 @@ from app.cleanup import cleanup_old_audio_files
 
 load_dotenv()
 
-app = FastAPI(title="AI Roundtable", description="AI-powered panel discussions")
+# Use ORJSON for faster JSON serialization
+app = FastAPI(
+    title="AI Roundtable",
+    description="AI-powered panel discussions",
+    default_response_class=ORJSONResponse
+)
+
+# Add Gzip compression for faster response delivery
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 logger = logging.getLogger(__name__)
 
-# Create tts_output directory if it doesn't exist
+# Create directories if they don't exist
 os.makedirs("tts_output", exist_ok=True)
+os.makedirs("episodes_data", exist_ok=True)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -29,7 +39,7 @@ scheduler = BackgroundScheduler()
 scheduler.add_job(cleanup_old_audio_files, "cron", hour=2, minute=0)  # Daily at 2 AM
 scheduler.start()
 
-logger.info("Cleanup scheduler started - runs daily at 2 AM")
+logger.info("✅ Cleanup scheduler started - runs daily at 2 AM")
 
 
 @app.get("/")
@@ -62,7 +72,7 @@ async def generate(tts: bool = True, topic: str = "government_jobs"):
 
 @app.get("/api/episodes")
 def get_episodes():
-    """Get all episodes with metadata"""
+    """Get all episodes - client-side caches for 5 minutes"""
     episodes = get_all_episodes()
     return {"episodes": episodes}
 

@@ -728,6 +728,9 @@
                         <select id="topic-selector" onchange="updateTopicDescription()">
                             <option value="government_jobs">🏛️ Government Jobs & Exams</option>
                             <option value="travel">✈️ Travel Destinations</option>
+                            <option value="tech_startup">💻 Tech Startups & Entrepreneurship</option>
+                            <option value="personal_finance">💰 Personal Finance & Investing</option>
+                            <option value="mental_health">🧠 Mental Health & Wellness</option>
                         </select>
                     </div>
                     
@@ -823,6 +826,27 @@
                     <p>✈️ 4 Travelers Share: Salt Lake City 🇺🇸 • Abu Dhabi 🇦🇪 • Chennai & Bangalore 🇮🇳 • Manchester 🇬🇧</p>
                     <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
                         Elena (Spain 🇪🇸 - Visited) • Fatima (UAE 🇦🇪 - Researcher) • Priya (India 🇮🇳 - Sister Lives There) • Carlos (Mexico 🇲🇽 - Planning to Move)
+                    </p>
+                `;
+            } else if (topic === 'tech_startup') {
+                desc.innerHTML = `
+                    <p>💻 4 Founders Discuss: Finding PMF • Fundraising • Unit Economics • Hiring • Scaling</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Vikram (CEO 🇮🇳) • Sofia (Product Manager 🇪🇸) • Alex (CTO 🇺🇸) • Jasmine (Growth Lead 🇬🇧)
+                    </p>
+                `;
+            } else if (topic === 'personal_finance') {
+                desc.innerHTML = `
+                    <p>💰 4 Experts Cover: Budgeting • Investing • Debt Management • Real Estate • Retirement</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Raj (Financial Advisor 🇮🇳) • Isabella (Money Coach 🇮🇹) • Marcus (Entrepreneur 🇺🇸) • Priya (Student 🇮🇳)
+                    </p>
+                `;
+            } else if (topic === 'mental_health') {
+                desc.innerHTML = `
+                    <p>🧠 4 Professionals Share: Stress & Anxiety • Sleep • Relationships • Work-Life Balance • Self-Esteem</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Dr. Arjun (Psychologist 🇮🇳) • Luna (Life Coach 🇺🇸) • James (Mental Health Advocate 🇬🇧) • Divya (Wellness Officer 🇮🇳)
                     </p>
                 `;
             } else {
