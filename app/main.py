@@ -46,10 +46,18 @@ async def generate(tts: bool = True, topic: str = "government_jobs"):
         tts: Enable text-to-speech (default: True)
         topic: Topic type - "government_jobs" or "travel" (default: "government_jobs")
     """
-    episode = await run_roundtable(tts_enabled=tts, topic_type=topic)
-    # Store episode metadata
-    add_episode(episode["topic"], episode["turns"])
-    return episode
+    try:
+        logger.info(f"Generating episode: topic={topic}, tts={tts}")
+        episode = await run_roundtable(tts_enabled=tts, topic_type=topic)
+        
+        # Store episode metadata
+        episode_id = add_episode(episode["topic"], episode["turns"])
+        logger.info(f"Episode created: {episode_id} - {episode['topic']}")
+        
+        return episode
+    except Exception as e:
+        logger.error(f"Error generating episode: {str(e)}", exc_info=True)
+        raise
 
 
 @app.get("/api/episodes")

@@ -46,12 +46,14 @@ async def speak_text(text, accent, folder="tts_output"):
     
     if is_macos():
         # macOS: use native 'say' command with AIFF format
-        filename = os.path.join(folder, f"{timestamp}.aiff")
+        filename = f"{timestamp}.aiff"
+        filepath = os.path.join(folder, filename)
         voice = resolve_voice(accent)
-        subprocess.run(["say", "-v", voice, text, "-o", filename], check=True)
+        subprocess.run(["say", "-v", voice, text, "-o", filepath], check=True)
     else:
         # Linux: use espeak-ng with improved quality settings
-        filename = os.path.join(folder, f"{timestamp}.wav")
+        filename = f"{timestamp}.wav"
+        filepath = os.path.join(folder, filename)
         voice = resolve_voice(accent)
         
         # espeak-ng with quality improvements:
@@ -60,9 +62,10 @@ async def speak_text(text, accent, folder="tts_output"):
         # -a: amplitude/volume (default 100, boost to 150)
         # -g: word gap in 10ms units (10 = 100ms pause between words)
         subprocess.run(
-            ["espeak-ng", "-v", voice, "-s", "140", "-p", "50", "-a", "150", "-g", "10", "-w", filename, text],
+            ["espeak-ng", "-v", voice, "-s", "140", "-p", "50", "-a", "150", "-g", "10", "-w", filepath, text],
             check=True,
             capture_output=True
         )
     
+    # Return just filename for storage - path construction happens at higher level
     return filename
