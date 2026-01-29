@@ -21,9 +21,17 @@ fi
 # Activate venv
 source venv/bin/activate
 
+# If venv python is missing/broken, recreate the venv
+if [ ! -x "$SCRIPT_DIR/venv/bin/python" ] || ! "$SCRIPT_DIR/venv/bin/python" -V >/dev/null 2>&1; then
+    echo "⚠️  Virtual environment is broken. Recreating..."
+    rm -rf venv
+    python3 -m venv venv
+    source venv/bin/activate
+fi
+
 # Install/upgrade dependencies
 echo "📦 Checking dependencies..."
-pip install -q -r app/requirements.txt
+"$SCRIPT_DIR/venv/bin/pip" install -q -r app/requirements.txt
 
 # Create necessary directories
 mkdir -p tts_output
@@ -46,4 +54,4 @@ echo "================================"
 echo ""
 
 # Start uvicorn
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+"$SCRIPT_DIR/venv/bin/uvicorn" app.main:app --host 0.0.0.0 --port 8000

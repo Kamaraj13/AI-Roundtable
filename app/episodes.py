@@ -54,13 +54,44 @@ def add_episode(topic: str, turns: list) -> str:
 
 
 def get_all_episodes() -> List[dict]:
-    """Get all episodes sorted by date (newest first)"""
+    """Get all episodes sorted by date (newest first), deduped by topic."""
     episodes = load_episodes()
-    return sorted(
+
+    # Sort newest first
+    sorted_episodes = sorted(
         episodes.values(),
         key=lambda x: x.get("created_at", ""),
         reverse=True
     )
+
+    # Deduplicate by topic, prefer entries with audio
+    best_by_topic = {}
+    for ep in sorted_episodes:
+        topic = ep.get("topic", "Unknown")
+        current = best_by_topic.get(topic)
+        if not current:
+            best_by_topic[topic] = ep
+            continue
+
+        current_audio = len(current.get("audio_files", []) or [])
+        ep_audio = len(ep.get("audio_files", []) or [])
+
+        # Prefer episodes that actually have audio files
+        if ep_audio > 0 and current_audio == 0:
+            best_by_topic[topic] = ep
+
+    # Return in newest-first order while keeping only one per topic
+    deduped = []
+    added = set()
+    for ep in sorted_episodes:
+        topic = ep.get("topic", "Unknown")
+        if topic in added:
+            continue
+        if best_by_topic.get(topic) == ep:
+            deduped.append(ep)
+            added.add(topic)
+
+    return deduped
 
 
 def get_episode(episode_id: str) -> dict:

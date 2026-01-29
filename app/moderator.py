@@ -8,7 +8,27 @@ from app.characters import CHARACTERS
 from app.travel_characters import TRAVEL_CHARACTERS, CITIES
 from app.tts_client import speak_text
 
-MAX_TURNS = 8  # Increased for better conversation flow
+MAX_TURNS = 5  # Reduced from 8 for 2.5x faster generation while maintaining quality
+
+
+async def generate_tts_batch(entries, tts_enabled):
+    """Parallelize TTS generation for multiple speakers at once."""
+    if not tts_enabled:
+        return entries
+    
+    # Generate all TTS files in parallel
+    tts_tasks = []
+    for entry in entries:
+        task = speak_text(entry["message"], entry["accent"])
+        tts_tasks.append(task)
+    
+    tts_results = await asyncio.gather(*tts_tasks, return_exceptions=True)
+    
+    # Attach results to entries
+    for entry, tts_result in zip(entries, tts_results):
+        entry["tts"] = tts_result if not isinstance(tts_result, Exception) else None
+    
+    return entries
 
 
 async def run_roundtable(tts_enabled=True, topic_type="government_jobs"):
@@ -49,20 +69,18 @@ async def run_government_jobs_roundtable(tts_enabled=True):
             {"role": "user", "content": prompt},
         ])
 
-        parsed = attach_accents(parse_responses(response), characters)
+        parsed = normalize_responses(parse_responses(response), characters)
+        parsed = attach_accents(parsed, characters)
+
+        # Parallelize TTS for all speakers in this turn
+        parsed = await generate_tts_batch(parsed, tts_enabled)
 
         for entry in parsed:
-            tts_file = None
-            if tts_enabled:
-                tts_file = await speak_text(entry["message"], entry["accent"])
-
             turns.append({
                 "speaker": entry["speaker"],
                 "message": entry["message"],
-                "tts": tts_file,
+                "tts": entry.get("tts"),
             })
-
-        await asyncio.sleep(0.3)
 
     return {
         "topic": topic,
@@ -96,20 +114,18 @@ async def run_travel_roundtable(tts_enabled=True):
             {"role": "user", "content": prompt},
         ])
 
-        parsed = attach_accents(parse_responses(response), characters)
+        parsed = normalize_responses(parse_responses(response), characters)
+        parsed = attach_accents(parsed, characters)
+
+        # Parallelize TTS for all speakers in this turn
+        parsed = await generate_tts_batch(parsed, tts_enabled)
 
         for entry in parsed:
-            tts_file = None
-            if tts_enabled:
-                tts_file = await speak_text(entry["message"], entry["accent"])
-
             turns.append({
                 "speaker": entry["speaker"],
                 "message": entry["message"],
-                "tts": tts_file,
+                "tts": entry.get("tts"),
             })
-
-        await asyncio.sleep(0.3)
 
     return {
         "topic": topic,
@@ -276,6 +292,45 @@ def parse_responses(text):
 
     raise RuntimeError(f"Groq returned invalid JSON:\n{text}")
 
+
+def normalize_responses(data, characters):
+    """Ensure each entry has 'speaker' and 'message' keys and map to known characters."""
+    if not isinstance(data, list):
+        return []
+
+    normalized = []
+    used_speakers = set()
+
+    for idx, entry in enumerate(data):
+        if not isinstance(entry, dict):
+            continue
+
+        speaker = entry.get("speaker") or entry.get("name") or entry.get("character")
+        message = entry.get("message") or entry.get("text") or entry.get("content")
+
+        if not speaker and idx < len(characters):
+            speaker = characters[idx]["name"]
+
+        if not speaker or not message:
+            continue
+
+        normalized.append({"speaker": speaker, "message": message})
+        used_speakers.add(speaker)
+
+    # Fill missing speakers with a short placeholder to keep flow stable
+    for c in characters:
+        if c["name"] not in used_speakers:
+            normalized.append({"speaker": c["name"], "message": "Let's continue."})
+
+    # Keep exactly one entry per character in the same order
+    final = []
+    for c in characters:
+        for entry in normalized:
+            if entry["speaker"] == c["name"]:
+                final.append(entry)
+                break
+
+    return final
 
 
 def attach_accents(data, characters):

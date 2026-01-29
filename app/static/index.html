@@ -12,9 +12,10 @@
         }
         
         :root {
-            --primary: #6366f1;
-            --secondary: #ec4899;
-            --accent: #f59e0b;
+            /* Day Mode (Yellow/Green/Sky Blue) */
+            --primary: #0ea5e9;
+            --secondary: #10b981;
+            --accent: #fbbf24;
             --dark-bg: #0a0e27;
             --card-bg: #1a1f3a;
             --text-primary: #ffffff;
@@ -22,12 +23,30 @@
             --success: #10b981;
             --danger: #ef4444;
             --blur: 20px;
+            --bg-gradient-1: #0a1628;
+            --bg-gradient-2: #0f2e1b;
+            --bg-gradient-3: #1a2f35;
+            --radial-1: rgba(14, 165, 233, 0.08);
+            --radial-2: rgba(16, 185, 129, 0.08);
+        }
+        
+        body.night-mode {
+            /* Night Mode (Purple/Pink/Orange) */
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --bg-gradient-1: #0a0e27;
+            --bg-gradient-2: #0f1b35;
+            --bg-gradient-3: #1a0f2e;
+            --radial-1: rgba(99, 102, 241, 0.08);
+            --radial-2: rgba(236, 72, 153, 0.08);
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1b35 50%, #1a0f2e 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
             background-attachment: fixed;
+            transition: background 0.6s ease;
             min-height: 100vh;
             color: var(--text-primary);
             overflow-x: hidden;
@@ -42,8 +61,9 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, var(--radial-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--radial-2) 0%, transparent 50%);
+            transition: background 0.6s ease;
             pointer-events: none;
             z-index: 0;
         }
@@ -60,7 +80,7 @@
             width: 280px;
             background: rgba(26, 31, 58, 0.7);
             backdrop-filter: blur(var(--blur));
-            border-right: 1px solid rgba(99, 102, 241, 0.1);
+            border-right: 1px solid rgba(14, 165, 233, 0.1);
             padding: 40px 25px;
             display: flex;
             flex-direction: column;
@@ -94,6 +114,38 @@
             gap: 12px;
         }
         
+        .theme-toggle {
+            margin-top: auto;
+            padding: 14px;
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(var(--blur));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(26, 31, 58, 1);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+        
+        .theme-icon {
+            font-size: 1.4em;
+            transition: transform 0.3s;
+        }
+        
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(20deg);
+        }
+        
         .nav-title {
             font-size: 0.85em;
             color: var(--text-secondary);
@@ -119,15 +171,15 @@
         
         .nav-btn:hover {
             color: var(--text-primary);
-            background: rgba(99, 102, 241, 0.1);
-            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.3);
         }
         
         .nav-btn.active {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1));
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.1));
             border-color: var(--primary);
             color: var(--text-primary);
-            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
         }
         
         /* ===== MAIN CONTENT ===== */
@@ -181,7 +233,7 @@
             font-size: 3.5em;
             font-weight: 900;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b);
+            background: linear-gradient(135deg, #0ea5e9, #10b981, #fbbf24);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -206,7 +258,7 @@
             background: rgba(26, 31, 58, 0.8);
             backdrop-filter: blur(var(--blur));
             color: var(--text-primary);
-            border: 2px solid rgba(99, 102, 241, 0.3);
+            border: 2px solid rgba(14, 165, 233, 0.3);
             padding: 14px 20px;
             font-size: 1em;
             border-radius: 14px;
@@ -224,7 +276,7 @@
         .topic-selector-container select:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
         }
         
         .btn {
@@ -237,12 +289,12 @@
             font-weight: 600;
             font-size: 1em;
             transition: all 0.3s;
-            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
         }
         
         .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 32px rgba(14, 165, 233, 0.4);
         }
         
         .btn:active {
@@ -258,7 +310,7 @@
         .topic-description {
             background: rgba(26, 31, 58, 0.6);
             backdrop-filter: blur(var(--blur));
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.2);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 40px;
@@ -283,7 +335,7 @@
         .episode-card {
             background: rgba(26, 31, 58, 0.5);
             backdrop-filter: blur(var(--blur));
-            border: 1px solid rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.1);
             border-radius: 16px;
             padding: 24px;
             cursor: pointer;
@@ -299,16 +351,16 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
             opacity: 0;
             transition: opacity 0.4s;
         }
         
         .episode-card:hover {
             transform: translateY(-8px);
-            border-color: rgba(99, 102, 241, 0.3);
+            border-color: rgba(14, 165, 233, 0.3);
             background: rgba(26, 31, 58, 0.8);
-            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
         }
         
         .episode-card:hover::before {
@@ -345,8 +397,8 @@
             margin-top: 20px;
             width: 100%;
             padding: 12px 16px;
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.3);
             color: var(--primary);
             border-radius: 10px;
             cursor: pointer;
@@ -355,7 +407,7 @@
         }
         
         .view-btn:hover {
-            background: rgba(99, 102, 241, 0.3);
+            background: rgba(14, 165, 233, 0.3);
             border-color: var(--primary);
         }
         
@@ -381,8 +433,8 @@
         }
         
         .back-btn {
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.3);
             color: var(--primary);
             padding: 10px 20px;
             border-radius: 10px;
@@ -392,7 +444,7 @@
         }
         
         .back-btn:hover {
-            background: rgba(99, 102, 241, 0.3);
+            background: rgba(14, 165, 233, 0.3);
             border-color: var(--primary);
         }
         
@@ -405,7 +457,7 @@
         .detail-section {
             background: rgba(26, 31, 58, 0.5);
             backdrop-filter: blur(var(--blur));
-            border: 1px solid rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.1);
             border-radius: 16px;
             padding: 32px;
         }
@@ -425,7 +477,7 @@
         
         .message-item {
             padding: 20px;
-            background: rgba(99, 102, 241, 0.05);
+            background: rgba(14, 165, 233, 0.05);
             border-left: 4px solid var(--primary);
             border-radius: 8px;
             animation: slideInLeft 0.3s ease-out;
@@ -450,16 +502,16 @@
         }
         
         .audio-item {
-            background: rgba(99, 102, 241, 0.05);
-            border: 1px solid rgba(99, 102, 241, 0.1);
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.1);
             border-radius: 10px;
             padding: 16px;
             transition: all 0.3s;
         }
         
         .audio-item:hover {
-            background: rgba(99, 102, 241, 0.1);
-            border-color: rgba(99, 102, 241, 0.2);
+            background: rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.2);
         }
         
         .audio-label {
@@ -483,8 +535,8 @@
         }
         
         .stat-box {
-            background: rgba(99, 102, 241, 0.1);
-            border: 1px solid rgba(99, 102, 241, 0.2);
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
             border-radius: 10px;
             padding: 16px;
             text-align: center;
@@ -502,6 +554,68 @@
             margin-top: 8px;
         }
         
+        /* ===== PONG GAME PAGE ===== */
+        #pong-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+        }
+        
+        #pongCanvas {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(var(--blur));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            cursor: none;
+            box-shadow: 0 0 40px rgba(14, 165, 233, 0.3);
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .pong-info {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+        
+        .pong-controls {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .pong-controls h3 {
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+        
+        .pong-controls p {
+            color: var(--text-secondary);
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        
+        .score-display {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            min-width: 200px;
+        }
+        
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
             width: 8px;
@@ -512,12 +626,12 @@
         }
         
         ::-webkit-scrollbar-thumb {
-            background: rgba(99, 102, 241, 0.3);
+            background: rgba(14, 165, 233, 0.3);
             border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(99, 102, 241, 0.5);
+            background: rgba(14, 165, 233, 0.5);
         }
         
         /* ===== RESPONSIVE ===== */
@@ -530,7 +644,7 @@
                 height: auto;
                 padding: 20px;
                 border-right: none;
-                border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+                border-bottom: 1px solid rgba(14, 165, 233, 0.1);
                 z-index: 10;
                 flex-direction: row;
                 gap: 20px;
@@ -573,14 +687,20 @@
             
             <div class="nav-section">
                 <div class="nav-title">Navigation</div>
-                <button class="nav-btn active" onclick="showPage('home')">📺 All Episodes</button>
+                <button class="nav-btn active" onclick="clearFilter()">📺 All Episodes</button>
                 <button class="nav-btn" onclick="showPage('create')">➕ Create Episode</button>
+                <button class="nav-btn" onclick="showPage('pong')">🎮 Play Pong</button>
             </div>
             
             <div class="nav-section">
                 <div class="nav-title">Topics</div>
                 <button class="nav-btn" onclick="filterByTopic('government_jobs')">🏛️ Government Jobs</button>
                 <button class="nav-btn" onclick="filterByTopic('travel')">✈️ Travel</button>
+            </div>
+            
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span>Theme</span>
+                <span class="theme-icon" id="theme-icon">☀️</span>
             </div>
         </div>
         
@@ -630,12 +750,64 @@
                 
                 <div id="detail-content" class="episode-details"></div>
             </div>
+            
+            <!-- PONG GAME PAGE -->
+            <div id="pong" class="page">
+                <div class="header" style="margin-bottom: 30px;">
+                    <h1>🎮 Pong Challenge</h1>
+                    <p>Stay focused while listening to podcasts - Play Pong!</p>
+                </div>
+                
+                <div id="pong-container">
+                    <div class="score-display" id="score-display">Player 1: 0 | Player 2: 0</div>
+                    <canvas id="pongCanvas" width="800" height="500"></canvas>
+                    
+                    <div class="pong-controls">
+                        <h3>How to Play</h3>
+                        <p><strong>Player 1 (Left):</strong> Use <kbd>W</kbd> and <kbd>S</kbd> keys</p>
+                        <p><strong>Player 2 (Right):</strong> Use <kbd>↑</kbd> and <kbd>↓</kbd> arrow keys</p>
+                        <p style="margin-top: 16px; font-size: 0.9em; opacity: 0.8;">Game starts automatically • Press any key to play</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
     <script>
         let currentFilter = null;
         let currentEpisode = null;
+        
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.classList.contains('night-mode')) {
+                body.classList.remove('night-mode');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'day');
+            } else {
+                body.classList.add('night-mode');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'night');
+            }
+        }
+        
+        // Load saved theme on page load
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'night') {
+                document.body.classList.add('night-mode');
+                themeIcon.textContent = '🌙';
+            } else {
+                themeIcon.textContent = '☀️';
+            }
+        }
+        
+        // Initialize theme on page load
+        window.addEventListener('DOMContentLoaded', loadTheme);
         
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -661,6 +833,21 @@
         function filterByTopic(topic) {
             currentFilter = topic;
             loadEpisodes();
+            showPage('home');  // Switch to home page to show filtered results
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function clearFilter() {
+            currentFilter = null;
+            loadEpisodes();
+            showPage('home');
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-btn')[0].classList.add('active');  // Mark "All Episodes" as active
         }
         
         async function loadEpisodes() {
@@ -807,6 +994,249 @@
                 }, 3000);
             }
         }
+        
+        // ===== PONG GAME =====
+        let pongGame = null;
+        
+        class PongGame {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.width = canvas.width;
+                this.height = canvas.height;
+                
+                this.ball = {
+                    x: this.width / 2,
+                    y: this.height / 2,
+                    radius: 10,
+                    speedX: 2.5,
+                    speedY: 2.5,
+                    maxSpeed: 4
+                };
+                
+                this.paddle1 = {
+                    x: 20,
+                    y: this.height / 2 - 50,
+                    width: 18,
+                    height: 100,
+                    speed: 6,
+                    dy: 0
+                };
+                
+                this.paddle2 = {
+                    x: this.width - 38,
+                    y: this.height / 2 - 50,
+                    width: 18,
+                    height: 100,
+                    speed: 6,
+                    dy: 0
+                };
+                
+                this.score1 = 0;
+                this.score2 = 0;
+                this.keys = {};
+                
+                this.setupInput();
+                this.gameLoop();
+            }
+            
+            setupInput() {
+                document.addEventListener('keydown', (e) => {
+                    this.keys[e.key] = true;
+                });
+                document.addEventListener('keyup', (e) => {
+                    this.keys[e.key] = false;
+                });
+            }
+            
+            update() {
+                // Move paddles
+                if (this.keys['w'] || this.keys['W']) {
+                    this.paddle1.y = Math.max(0, this.paddle1.y - this.paddle1.speed);
+                }
+                if (this.keys['s'] || this.keys['S']) {
+                    this.paddle1.y = Math.min(this.height - this.paddle1.height, this.paddle1.y + this.paddle1.speed);
+                }
+                if (this.keys['ArrowUp']) {
+                    this.paddle2.y = Math.max(0, this.paddle2.y - this.paddle2.speed);
+                }
+                if (this.keys['ArrowDown']) {
+                    this.paddle2.y = Math.min(this.height - this.paddle2.height, this.paddle2.y + this.paddle2.speed);
+                }
+                
+                // Move ball
+                this.ball.x += this.ball.speedX;
+                this.ball.y += this.ball.speedY;
+                
+                // Ball collision with top/bottom
+                if (this.ball.y - this.ball.radius < 0 || this.ball.y + this.ball.radius > this.height) {
+                    this.ball.speedY = -this.ball.speedY;
+                    this.ball.y = Math.max(this.ball.radius, Math.min(this.height - this.ball.radius, this.ball.y));
+                }
+                
+                // Ball collision with paddles
+                if (this.ball.x - this.ball.radius < this.paddle1.x + this.paddle1.width &&
+                    this.ball.y > this.paddle1.y &&
+                    this.ball.y < this.paddle1.y + this.paddle1.height) {
+                    this.ball.speedX = Math.abs(this.ball.speedX);
+                    this.ball.x = this.paddle1.x + this.paddle1.width + this.ball.radius;
+                }
+                
+                if (this.ball.x + this.ball.radius > this.paddle2.x &&
+                    this.ball.y > this.paddle2.y &&
+                    this.ball.y < this.paddle2.y + this.paddle2.height) {
+                    this.ball.speedX = -Math.abs(this.ball.speedX);
+                    this.ball.x = this.paddle2.x - this.ball.radius;
+                }
+                
+                // Score
+                if (this.ball.x < 0) {
+                    this.score2++;
+                    this.resetBall();
+                }
+                if (this.ball.x > this.width) {
+                    this.score1++;
+                    this.resetBall();
+                }
+                
+                this.updateScore();
+            }
+            
+            resetBall() {
+                this.ball.x = this.width / 2;
+                this.ball.y = this.height / 2;
+                this.ball.speedX = (Math.random() > 0.5 ? 1 : -1) * 2.5;
+                this.ball.speedY = (Math.random() - 0.5) * 2.5;
+            }
+            
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(26, 31, 58, 0.3)';
+                this.ctx.fillRect(0, 0, this.width, this.height);
+                
+                // Draw center line
+                this.ctx.strokeStyle = 'rgba(14, 165, 233, 0.2)';
+                this.ctx.setLineDash([10, 10]);
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.width / 2, 0);
+                this.ctx.lineTo(this.width / 2, this.height);
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+                
+                // Draw tennis rackets (paddles)
+                // Left racket
+                this.drawTennisRacket(this.paddle1.x + 5, this.paddle1.y, true);
+                // Right racket
+                this.drawTennisRacket(this.paddle2.x + 5, this.paddle2.y, false);
+                
+                // Draw tennis ball
+                this.drawTennisBall(this.ball.x, this.ball.y, this.ball.radius);
+            }
+            
+            drawTennisRacket(x, y, isLeft) {
+                // Racket handle (brown wood color)
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(x - 2, y + 80, 8, 30);
+                
+                // Racket grip
+                this.ctx.strokeStyle = '#D2B48C';
+                this.ctx.lineWidth = 2;
+                for (let i = 0; i < 4; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x - 2, y + 85 + i * 7);
+                    this.ctx.lineTo(x + 6, y + 85 + i * 7);
+                    this.ctx.stroke();
+                }
+                
+                // Racket head (string area) - oval
+                this.ctx.fillStyle = '#FFE4B5';
+                this.ctx.beginPath();
+                this.ctx.ellipse(x + 2, y + 30, 15, 35, 0, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // String pattern
+                this.ctx.strokeStyle = 'rgba(139, 69, 19, 0.3)';
+                this.ctx.lineWidth = 1;
+                for (let i = -3; i <= 3; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x + 2 + i * 3, y - 5);
+                    this.ctx.lineTo(x + 2 + i * 3, y + 65);
+                    this.ctx.stroke();
+                }
+                for (let i = -8; i <= 8; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x - 13, y + 30 + i * 3);
+                    this.ctx.lineTo(x + 17, y + 30 + i * 3);
+                    this.ctx.stroke();
+                }
+                
+                // Racket frame
+                this.ctx.strokeStyle = '#333333';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.ellipse(x + 2, y + 30, 15, 35, 0, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+            
+            drawTennisBall(x, y, radius) {
+                // Main yellow-green ball
+                const gradient = this.ctx.createRadialGradient(x - 3, y - 3, 0, x, y, radius);
+                gradient.addColorStop(0, '#FFFF00');
+                gradient.addColorStop(1, '#ADFF2F');
+                this.ctx.fillStyle = gradient;
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Ball shadow/shine
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.arc(x - 3, y - 3, radius - 2, 0, Math.PI * 2);
+                this.ctx.stroke();
+                
+                // Tennis ball seams (curved lines)
+                this.ctx.strokeStyle = '#FFFFFF';
+                this.ctx.lineWidth = 1.5;
+                
+                // Curved seam 1
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius - 2, Math.PI * 0.15, Math.PI * 0.4);
+                this.ctx.stroke();
+                
+                // Curved seam 2
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius - 2, Math.PI * 1.6, Math.PI * 1.85);
+                this.ctx.stroke();
+            }
+            
+            updateScore() {
+                document.getElementById('score-display').textContent = `Player 1: ${this.score1} | Player 2: ${this.score2}`;
+            }
+            
+            gameLoop() {
+                this.update();
+                this.draw();
+                requestAnimationFrame(() => this.gameLoop());
+            }
+        }
+        
+        // Initialize Pong when page loads
+        function initPong() {
+            const canvas = document.getElementById('pongCanvas');
+            if (canvas && !pongGame) {
+                pongGame = new PongGame(canvas);
+            }
+        }
+        
+        // Update showPage to initialize Pong when switching to pong page
+        const originalShowPage = showPage;
+        showPage = function(pageId) {
+            originalShowPage(pageId);
+            if (pageId === 'pong') {
+                setTimeout(initPong, 100);
+            }
+        };
         
         window.addEventListener('load', loadEpisodes);
         updateTopicDescription();
