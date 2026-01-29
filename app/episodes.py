@@ -32,12 +32,26 @@ def add_episode(topic: str, turns: list) -> str:
     episode_id = str(int(datetime.now().timestamp() * 1000))
     
     episodes = load_episodes()
+    # Extract audio file paths and prepend /tts_output/ for web access
+    audio_files = []
+    for turn in turns:
+        if turn.get("tts"):
+            # If path starts with tts_output/, prepend /
+            # Otherwise if it's just a filename, prepend /tts_output/
+            path = turn.get("tts")
+            if path.startswith("tts_output/"):
+                audio_files.append("/" + path)
+            elif not path.startswith("/"):
+                audio_files.append("/tts_output/" + os.path.basename(path))
+            else:
+                audio_files.append(path)
+    
     episodes[episode_id] = {
         "id": episode_id,
         "topic": topic,
         "created_at": datetime.now().isoformat(),
         "turns_count": len(turns),
-        "audio_files": [turn.get("tts") for turn in turns if turn.get("tts")]
+        "audio_files": audio_files
     }
     
     save_episodes(episodes)

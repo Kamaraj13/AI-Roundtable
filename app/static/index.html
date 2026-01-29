@@ -531,10 +531,15 @@
                         </div>
                         <div class="audio-files">
                             ${ep.audio_files.length > 0 ? 
-                                ep.audio_files.map(file => `
+                                ep.audio_files.map((file, i) => `
                                     <div class="audio-item">
-                                        <audio controls style="width: 100%; height: 30px;">
+                                        <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px;">
+                                            🎵 Turn ${i + 1}
+                                        </div>
+                                        <audio controls style="width: 100%; height: 35px;">
+                                            <source src="${file}" type="audio/aiff">
                                             <source src="${file}" type="audio/wav">
+                                            <source src="${file}" type="audio/mpeg">
                                             Your browser does not support the audio element.
                                         </audio>
                                     </div>
@@ -573,13 +578,13 @@
                         ✈️ 4 Travelers Share: Salt Lake City 🇺🇸 • Abu Dhabi 🇦🇪 • Chennai & Bangalore 🇮🇳 • Manchester 🇬🇧
                     </p>
                     <p style="color: var(--text-secondary); font-size: 0.9em; margin-top: 10px; opacity: 0.8;">
-                        🌍 Elena (Spain - Visited) • 📚 Fatima (UAE - Researcher) • 👭 Priya (India - Sister Lives There) • 🏠 Carlos (Mexico - Planning to Move)
+                        Elena (Spain 🇪🇸 - Visited) • Fatima (UAE 🇦🇪 - Researcher) • Priya (India 🇮🇳 - Sister Lives There) • Carlos (Mexico 🇲🇽 - Planning to Move)
                     </p>
                 `;
             } else {
                 desc.innerHTML = `
                     <p style="color: var(--text-secondary); font-size: 1.1em;">
-                        🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths
+                        🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India
                     </p>
                 `;
             }

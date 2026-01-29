@@ -71,7 +71,7 @@ async def run_government_jobs_roundtable(tts_enabled=True):
 
 
 async def run_travel_roundtable(tts_enabled=True):
-    topic = f"Travel Destinations: {', '.join([c['name'] for c in CITIES])}"
+    topic = "Our Favorite Travel Destinations"
     characters = TRAVEL_CHARACTERS
     turns = []
 
