@@ -5,13 +5,29 @@ import json
 import re
 from app.groq_client import call_groq
 from app.characters import CHARACTERS
+from app.travel_characters import TRAVEL_CHARACTERS, CITIES
 from app.tts_client import speak_text
 
-TOPIC = "Government Jobs and Exams in India"
 MAX_TURNS = 8  # Increased for better conversation flow
 
 
-async def run_roundtable(tts_enabled=True):
+async def run_roundtable(tts_enabled=True, topic_type="government_jobs"):
+    """
+    Run a roundtable discussion.
+    
+    Args:
+        tts_enabled: Enable text-to-speech
+        topic_type: "government_jobs" or "travel"
+    """
+    if topic_type == "travel":
+        return await run_travel_roundtable(tts_enabled)
+    else:
+        return await run_government_jobs_roundtable(tts_enabled)
+
+
+async def run_government_jobs_roundtable(tts_enabled=True):
+    topic = "Government Jobs and Exams in India"
+    characters = CHARACTERS
     turns = []
 
     intro = (
@@ -26,14 +42,14 @@ async def run_roundtable(tts_enabled=True):
     })
 
     for turn in range(MAX_TURNS):
-        prompt = build_prompt(turns)
+        prompt = build_government_jobs_prompt(turns, topic, characters)
 
         response = await call_groq([
-            {"role": "system", "content": build_system_prompt()},
+            {"role": "system", "content": build_government_jobs_system_prompt(characters)},
             {"role": "user", "content": prompt},
         ])
 
-        parsed = attach_accents(parse_responses(response))
+        parsed = attach_accents(parse_responses(response), characters)
 
         for entry in parsed:
             tts_file = None
@@ -49,12 +65,59 @@ async def run_roundtable(tts_enabled=True):
         await asyncio.sleep(0.3)
 
     return {
-        "topic": TOPIC,
+        "topic": topic,
         "turns": turns,
     }
 
 
-def build_system_prompt():
+async def run_travel_roundtable(tts_enabled=True):
+    topic = f"Travel Destinations: {', '.join([c['name'] for c in CITIES])}"
+    characters = TRAVEL_CHARACTERS
+    turns = []
+
+    intro = (
+        f"Welcome to the AI Roundtable Travel Edition! Today we're discussing amazing destinations: "
+        f"Salt Lake City USA, Abu Dhabi UAE, Chennai and Bangalore in India, and Manchester UK. "
+        f"Our panel includes Elena from Spain who's visited all these places, Fatima from UAE who's researched them extensively, "
+        f"Priya from India whose sister lives abroad, and Carlos from Mexico who's planning to relocate."
+    )
+
+    turns.append({
+        "speaker": "Moderator",
+        "message": intro,
+        "tts": None,
+    })
+
+    for turn in range(MAX_TURNS):
+        prompt = build_travel_prompt(turns, topic, characters)
+
+        response = await call_groq([
+            {"role": "system", "content": build_travel_system_prompt(characters)},
+            {"role": "user", "content": prompt},
+        ])
+
+        parsed = attach_accents(parse_responses(response), characters)
+
+        for entry in parsed:
+            tts_file = None
+            if tts_enabled:
+                tts_file = await speak_text(entry["message"], entry["accent"])
+
+            turns.append({
+                "speaker": entry["speaker"],
+                "message": entry["message"],
+                "tts": tts_file,
+            })
+
+        await asyncio.sleep(0.3)
+
+    return {
+        "topic": topic,
+        "turns": turns,
+    }
+
+
+def build_government_jobs_system_prompt(characters):
     return """
 You are generating a lively, engaging roundtable discussion with EXACTLY 4 characters.
 
@@ -82,13 +145,50 @@ OUTPUT RULES:
 """
 
 
-def build_prompt(turns):
+def build_travel_system_prompt(characters):
+    char_descriptions = "\n".join([
+        f"- {c['name']}: {c['role']} - {c['perspective']}"
+        for c in characters
+    ])
+    
+    return f"""
+You are generating a lively, engaging roundtable discussion about travel destinations with EXACTLY 4 characters.
+
+CHARACTERS:
+{char_descriptions}
+
+DESTINATIONS TO DISCUSS:
+- Salt Lake City, USA: Mountain activities, skiing, Temple Square, craft breweries
+- Abu Dhabi, UAE: Sheikh Zayed Grand Mosque, Louvre, desert safaris, luxury
+- Chennai, India: Marina Beach, temples, filter coffee, seafood
+- Bangalore, India: Tech hub, gardens, pub culture, pleasant weather
+- Manchester, UK: Football, music scene, industrial heritage, Northern Quarter
+
+CONVERSATION STYLE:
+- Keep responses SHORT (1-3 sentences max)
+- Share specific recommendations: places to visit, food to try, best seasons, activities
+- Use natural, conversational language with personality
+- Each character brings their unique perspective (visited, researched, sister's stories, planning to move)
+- Build on what others say
+- Ask follow-up questions
+- Share practical tips and personal insights
+
+OUTPUT RULES:
+1. Output ONLY valid JSON
+2. Output ONLY a JSON list
+3. EXACTLY 4 objects with "speaker" and "message"
+4. NO markdown, NO code blocks, NO trailing commas
+5. Each message: 1-3 sentences maximum
+"""
+
+
+def build_government_jobs_prompt(turns, topic, characters):
     history = ""
     for t in turns[-6:]:
         history += f"{t['speaker']}: {t['message']}\n"
 
     return f"""
-Topic: {TOPIC}
+Topic: {topic}
 
 Recent conversation:
 {history}
@@ -110,6 +210,43 @@ Respond with JSON list of 4 objects:
   {{"speaker": "Serving Officer", "message": "Short, natural response" }},
   {{"speaker": "Fresh Qualifier", "message": "Short, natural response" }},
   {{"speaker": "Citizen", "message": "Short, natural response" }}
+]
+
+NO extra text. NO markdown.
+"""
+
+
+def build_travel_prompt(turns, topic, characters):
+    history = ""
+    for t in turns[-6:]:
+        history += f"{t['speaker']}: {t['message']}\n"
+
+    speaker_names = [c['name'] for c in characters]
+    json_template = ",\n  ".join([
+        f'{{"speaker": "{name}", "message": "Short, natural travel tip/recommendation"}}'
+        for name in speaker_names
+    ])
+
+    return f"""
+Topic: {topic}
+
+Recent conversation:
+{history}
+
+Now generate the NEXT TURN. Each person shares travel tips about one or more cities.
+
+GUIDELINES:
+- Keep each response 1-3 sentences
+- Share specific recommendations (places, food, seasons, activities)
+- Each character brings their unique perspective
+- React to what others shared
+- Ask follow-up questions
+- Be enthusiastic and helpful
+
+Respond with JSON list of 4 objects:
+
+[
+  {json_template}
 ]
 
 NO extra text. NO markdown.
@@ -141,10 +278,10 @@ def parse_responses(text):
 
 
 
-def attach_accents(data):
+def attach_accents(data, characters):
     for entry in data:
         entry.setdefault("accent", "default")
-        for c in CHARACTERS:
+        for c in characters:
             if c["name"] == entry["speaker"]:
                 entry["accent"] = c["accent"]
     return data

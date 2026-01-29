@@ -412,14 +412,43 @@
         <header>
             <h1>🎙️ AI Roundtable</h1>
             <p>Intelligent Panel Discussions</p>
-            <div class="subtitle">Government Jobs & Exams in India</div>
+            <div class="subtitle">Government Jobs & Travel Destinations</div>
         </header>
         
         <div class="controls">
+            <select id="topic-selector" style="
+                background: rgba(30, 41, 59, 0.8);
+                color: var(--text-primary);
+                border: 2px solid rgba(99, 102, 241, 0.3);
+                padding: 15px 25px;
+                font-size: 1.1em;
+                border-radius: 12px;
+                cursor: pointer;
+                font-weight: 600;
+                backdrop-filter: blur(10px);
+                transition: all 0.3s ease;
+            " onchange="updateTopicDescription()">
+                <option value="government_jobs">🏛️ Government Jobs & Exams</option>
+                <option value="travel">✈️ Travel Destinations</option>
+            </select>
             <button class="primary" onclick="generateNewEpisode()">
                 <span id="generate-text">🎬 Generate New Episode</span>
             </button>
             <button class="secondary" onclick="refreshEpisodes()">🔄 Refresh Episodes</button>
+        </div>
+        
+        <div id="topic-description" style="
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        ">
+            <p style="color: var(--text-secondary); font-size: 1.1em;">
+                🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths
+            </p>
         </div>
         
         <div class="stats" id="stats">
@@ -534,15 +563,38 @@
             document.getElementById('total-turns').textContent = turns;
         }
         
+        function updateTopicDescription() {
+            const topic = document.getElementById('topic-selector').value;
+            const desc = document.getElementById('topic-description');
+            
+            if (topic === 'travel') {
+                desc.innerHTML = `
+                    <p style="color: var(--text-secondary); font-size: 1.1em;">
+                        ✈️ 4 Travelers Share: Salt Lake City 🇺🇸 • Abu Dhabi 🇦🇪 • Chennai & Bangalore 🇮🇳 • Manchester 🇬🇧
+                    </p>
+                    <p style="color: var(--text-secondary); font-size: 0.9em; margin-top: 10px; opacity: 0.8;">
+                        🌍 Elena (Spain - Visited) • 📚 Fatima (UAE - Researcher) • 👭 Priya (India - Sister Lives There) • 🏠 Carlos (Mexico - Planning to Move)
+                    </p>
+                `;
+            } else {
+                desc.innerHTML = `
+                    <p style="color: var(--text-secondary); font-size: 1.1em;">
+                        🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths
+                    </p>
+                `;
+            }
+        }
+        
         async function generateNewEpisode() {
             const btn = event.target.closest('button');
             const text = document.getElementById('generate-text');
+            const topic = document.getElementById('topic-selector').value;
             btn.disabled = true;
             const originalText = text.textContent;
             text.innerHTML = '<div class="spinner"></div> Generating...';
             
             try {
-                const response = await fetch('/generate?tts=true', { method: 'POST' });
+                const response = await fetch(`/generate?tts=true&topic=${topic}`, { method: 'POST' });
                 if (response.ok) {
                     await new Promise(r => setTimeout(r, 2000));
                     await refreshEpisodes();

@@ -38,8 +38,15 @@ def health():
 
 
 @app.post("/generate")
-async def generate(tts: bool = True):
-    episode = await run_roundtable(tts_enabled=tts)
+async def generate(tts: bool = True, topic: str = "government_jobs"):
+    """
+    Generate a roundtable episode.
+    
+    Args:
+        tts: Enable text-to-speech (default: True)
+        topic: Topic type - "government_jobs" or "travel" (default: "government_jobs")
+    """
+    episode = await run_roundtable(tts_enabled=tts, topic_type=topic)
     # Store episode metadata
     add_episode(episode["topic"], episode["turns"])
     return episode

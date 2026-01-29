@@ -11,6 +11,9 @@ VOICE_MAP_MACOS = {
     "American": "Alex",
     "British": "Daniel",
     "Australian": "Karen",
+    "Spanish": "Monica",        # Spanish accent
+    "Arabian": "Majed",         # Arabic accent (female alternative: Maged)
+    "Mexican": "Juan",          # Mexican Spanish accent
     "default": "Alex",
 }
 
@@ -19,6 +22,9 @@ VOICE_MAP_LINUX = {
     "American": "en-us",         # US English
     "British": "en-gb",          # British English
     "Australian": "en-au",       # Australian English
+    "Spanish": "es",             # Spanish
+    "Arabian": "ar",             # Arabic
+    "Mexican": "es-mx",          # Mexican Spanish
     "default": "en-us",
 }
 
