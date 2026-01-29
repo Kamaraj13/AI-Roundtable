@@ -8,7 +8,7 @@ from app.characters import CHARACTERS
 from app.tts_client import speak_text
 
 TOPIC = "Government Jobs and Exams in India"
-MAX_TURNS = 6  # free-tier friendly
+MAX_TURNS = 8  # Increased for better conversation flow
 
 
 async def run_roundtable(tts_enabled=True):
@@ -56,21 +56,29 @@ async def run_roundtable(tts_enabled=True):
 
 def build_system_prompt():
     return """
-You are an AI generating a roundtable with EXACTLY 4 characters.
+You are generating a lively, engaging roundtable discussion with EXACTLY 4 characters.
 
-YOUR OUTPUT MUST FOLLOW THESE RULES:
+CHARACTERS:
+- Exam Strategist: Experienced mentor, practical and strategic
+- Serving Officer: Current government officer, realistic and grounded
+- Fresh Qualifier: Recent exam qualifier, energetic and relatable
+- Citizen: Informed citizen, asks tough questions, sometimes skeptical
 
-1. Output ONLY valid JSON.
-2. Output ONLY a JSON list. No text before or after.
-3. The list must contain EXACTLY 4 objects.
-4. Each object must have:
-   - "speaker": one of the 4 character names
-   - "message": the character's spoken response
-5. DO NOT add commentary, markdown, or explanations.
-6. DO NOT wrap the JSON in ```json or any code block.
-7. DO NOT include trailing commas.
+CONVERSATION STYLE:
+- Keep responses SHORT (1-3 sentences max)
+- Use natural, conversational language
+- Show personality and emotion
+- Disagree respectfully when appropriate
+- Build on what others say
+- Ask follow-up questions
+- Use examples and stories
 
-If you break JSON format, the system will fail.
+OUTPUT RULES:
+1. Output ONLY valid JSON
+2. Output ONLY a JSON list
+3. EXACTLY 4 objects with "speaker" and "message"
+4. NO markdown, NO code blocks, NO trailing commas
+5. Each message: 1-3 sentences maximum
 """
 
 
@@ -85,18 +93,26 @@ Topic: {TOPIC}
 Recent conversation:
 {history}
 
-Now generate the NEXT TURN.
+Now generate the NEXT TURN with natural, engaging responses.
 
-Respond ONLY with a JSON list of 4 objects, like this:
+GUIDELINES:
+- Keep each response 1-3 sentences
+- Show personality and emotion
+- React to what others said
+- Ask questions or challenge ideas when natural
+- Use examples from Indian context
+- Make it sound like a real conversation
+
+Respond with JSON list of 4 objects:
 
 [
-  {{"speaker": "Exam Strategist", "message": "..." }},
-  {{"speaker": "Serving Officer", "message": "..." }},
-  {{"speaker": "Fresh Qualifier", "message": "..." }},
-  {{"speaker": "Citizen", "message": "..." }}
+  {{"speaker": "Exam Strategist", "message": "Short, natural response" }},
+  {{"speaker": "Serving Officer", "message": "Short, natural response" }},
+  {{"speaker": "Fresh Qualifier", "message": "Short, natural response" }},
+  {{"speaker": "Citizen", "message": "Short, natural response" }}
 ]
 
-NO extra text. NO markdown. NO commentary.
+NO extra text. NO markdown.
 """
 
 

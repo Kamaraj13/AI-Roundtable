@@ -44,13 +44,17 @@ async def speak_text(text, accent, folder="tts_output"):
         voice = resolve_voice(accent)
         subprocess.run(["say", "-v", voice, text, "-o", filename], check=True)
     else:
-        # Linux: use espeak-ng for text-to-speech, output as WAV
+        # Linux: use espeak-ng with improved quality settings
         filename = os.path.join(folder, f"{timestamp}.wav")
         voice = resolve_voice(accent)
         
-        # espeak-ng command: espeak-ng -v <lang> -w <output.wav> "text"
+        # espeak-ng with quality improvements:
+        # -s: speed (default 175, slower = 140 for clarity)
+        # -p: pitch (default 50, adjusted for natural tone)
+        # -a: amplitude/volume (default 100, boost to 150)
+        # -g: word gap in 10ms units (10 = 100ms pause between words)
         subprocess.run(
-            ["espeak-ng", "-v", voice, "-w", filename, text],
+            ["espeak-ng", "-v", voice, "-s", "140", "-p", "50", "-a", "150", "-g", "10", "-w", filename, text],
             check=True,
             capture_output=True
         )
