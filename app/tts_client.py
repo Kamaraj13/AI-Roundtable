@@ -56,13 +56,13 @@ async def speak_text(text, accent, folder="tts_output"):
         filepath = os.path.join(folder, filename)
         voice = resolve_voice(accent)
         
-        # espeak-ng with quality improvements:
-        # -s: speed (default 175, slower = 140 for clarity)
-        # -p: pitch (default 50, adjusted for natural tone)
-        # -a: amplitude/volume (default 100, boost to 150)
-        # -g: word gap in 10ms units (10 = 100ms pause between words)
+        # espeak-ng with quality improvements for clarity:
+        # -s: speed 100 (very slow for crystal clear speech, default is 175)
+        # -p: pitch 50 (natural tone)
+        # -a: amplitude 200 (very loud and clear, boost from 100 default)
+        # -g: word gap 15ms (increase pause between words for clarity)
         subprocess.run(
-            ["espeak-ng", "-v", voice, "-s", "140", "-p", "50", "-a", "150", "-g", "10", "-w", filepath, text],
+            ["espeak-ng", "-v", voice, "-s", "100", "-p", "50", "-a", "200", "-g", "15", "-w", filepath, text],
             check=True,
             capture_output=True
         )

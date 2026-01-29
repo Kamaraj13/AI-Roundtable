@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Roundtable - Podcast Episodes</title>
+    <title>🎙️ AI Roundtable - Podcast Episodes</title>
     <style>
         * {
             margin: 0;
@@ -15,25 +15,25 @@
             --primary: #6366f1;
             --secondary: #ec4899;
             --accent: #f59e0b;
-            --dark-bg: #0f172a;
-            --light-bg: #f8fafc;
-            --card-bg: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
+            --dark-bg: #0a0e27;
+            --card-bg: #1a1f3a;
+            --text-primary: #ffffff;
+            --text-secondary: #a8b5d1;
             --success: #10b981;
             --danger: #ef4444;
+            --blur: 20px;
         }
         
         body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e3a8a 50%, #7c2d12 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #0f1b35 50%, #1a0f2e 100%);
             background-attachment: fixed;
             min-height: 100vh;
             color: var(--text-primary);
             overflow-x: hidden;
         }
         
-        /* Animated background elements */
+        /* Animated background with glassmorphism particles */
         body::before {
             content: '';
             position: fixed;
@@ -42,161 +42,252 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.08) 0%, transparent 50%);
             pointer-events: none;
             z-index: 0;
         }
         
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 40px 20px;
+        .app {
+            display: flex;
+            height: 100vh;
             position: relative;
             z-index: 1;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            animation: fadeInDown 0.8s ease-out;
+        /* ===== SIDEBAR NAVIGATION ===== */
+        .sidebar {
+            width: 280px;
+            background: rgba(26, 31, 58, 0.7);
+            backdrop-filter: blur(var(--blur));
+            border-right: 1px solid rgba(99, 102, 241, 0.1);
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            overflow-y: auto;
+            animation: slideInLeft 0.5s ease-out;
         }
         
-        header h1 {
-            font-size: 4em;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .nav-title {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            opacity: 0.6;
+            margin-bottom: 8px;
+        }
+        
+        .nav-btn {
+            padding: 14px 16px;
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-align: left;
+        }
+        
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1));
+            border-color: var(--primary);
+            color: var(--text-primary);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        /* Page animations */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            padding: 60px 50px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* ===== HOME PAGE ===== */
+        .header {
+            margin-bottom: 50px;
+            animation: slideInLeft 0.6s ease-out 0.1s both;
+        }
+        
+        .header h1 {
+            font-size: 3.5em;
             font-weight: 900;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
             letter-spacing: -2px;
         }
         
-        header p {
-            font-size: 1.3em;
+        .header p {
+            font-size: 1.2em;
             color: var(--text-secondary);
-            margin-bottom: 10px;
             font-weight: 300;
         }
         
-        .subtitle {
-            font-size: 1em;
-            color: var(--text-secondary);
-            opacity: 0.8;
-        }
-        
-        .controls {
+        .topic-selector-container {
             display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
             flex-wrap: wrap;
-            animation: fadeIn 1s ease-out 0.3s both;
+            animation: slideInLeft 0.6s ease-out 0.2s both;
         }
         
-        button {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
+        .topic-selector-container select {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(var(--blur));
+            color: var(--text-primary);
+            border: 2px solid rgba(99, 102, 241, 0.3);
+            padding: 14px 20px;
+            font-size: 1em;
+            border-radius: 14px;
             cursor: pointer;
-            font-size: 1.05em;
             font-weight: 600;
+            transition: all 0.3s;
+            min-width: 280px;
+        }
+        
+        .topic-selector-container select:hover {
+            border-color: var(--primary);
+            background: rgba(26, 31, 58, 0.95);
+        }
+        
+        .topic-selector-container select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
         }
         
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
         }
         
-        button:active {
-            transform: translateY(-1px);
+        .btn:active {
+            transform: translateY(0);
         }
         
-        button:disabled {
+        .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
         
-        button.secondary {
-            background: rgba(99, 102, 241, 0.2);
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-        
-        button.secondary:hover {
-            background: rgba(99, 102, 241, 0.3);
-        }
-        
-        .stats {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 50px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1s ease-out 0.5s both;
-        }
-        
-        .stat {
-            text-align: center;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
-            border-radius: 15px;
+        .topic-description {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(var(--blur));
             border: 1px solid rgba(99, 102, 241, 0.2);
-            transition: all 0.3s ease;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 40px;
+            animation: slideInLeft 0.6s ease-out 0.3s both;
         }
         
-        .stat:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
-        }
-        
-        .stat-value {
-            font-size: 2.5em;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
+        .topic-description p {
             color: var(--text-secondary);
-            font-size: 1em;
-            font-weight: 500;
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin: 8px 0;
         }
         
+        /* ===== EPISODES GRID ===== */
         .episodes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            animation: slideInLeft 0.6s ease-out 0.2s both;
         }
         
         .episode-card {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            animation: fadeIn 0.6s ease-out both;
+            background: rgba(26, 31, 58, 0.5);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
@@ -204,55 +295,43 @@
         .episode-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.4s;
         }
         
         .episode-card:hover {
             transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(26, 31, 58, 0.8);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
         }
         
         .episode-card:hover::before {
             opacity: 1;
         }
         
-        .episode-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
         .episode-icon {
-            font-size: 2em;
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 2.5em;
+            margin-bottom: 16px;
         }
         
-        .episode-card h3 {
-            color: white;
+        .episode-title {
             font-size: 1.3em;
-            margin-bottom: 5px;
-            line-height: 1.4;
-            flex: 1;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
         }
         
         .episode-meta {
             display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 16px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
             flex-wrap: wrap;
         }
         
@@ -260,312 +339,307 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(99, 102, 241, 0.1);
-            padding: 8px 14px;
-            border-radius: 25px;
-            font-size: 0.9em;
-            color: var(--text-secondary);
-            border: 1px solid rgba(99, 102, 241, 0.2);
         }
         
-        .audio-files {
-            max-height: 250px;
-            overflow-y: auto;
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid rgba(99, 102, 241, 0.1);
-        }
-        
-        .audio-item {
-            padding: 12px 0;
-            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
-        }
-        
-        .audio-item:last-child {
-            border-bottom: none;
-        }
-        
-        .audio-item audio {
+        .view-btn {
+            margin-top: 20px;
             width: 100%;
-            height: 35px;
+            padding: 12px 16px;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary);
+            border-radius: 10px;
             cursor: pointer;
-            accent-color: var(--primary);
+            font-weight: 600;
+            transition: all 0.3s;
         }
         
-        .audio-item audio::-webkit-media-controls-panel {
-            background-color: rgba(99, 102, 241, 0.2);
+        .view-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: var(--primary);
         }
         
         .empty-state {
             text-align: center;
-            padding: 60px 40px;
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border: 2px dashed rgba(99, 102, 241, 0.3);
-            border-radius: 20px;
-            animation: fadeIn 0.8s ease-out;
+            padding: 80px 40px;
+            color: var(--text-secondary);
         }
         
         .empty-state h2 {
             font-size: 2em;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 16px;
+            color: var(--text-primary);
         }
         
-        .empty-state p {
+        /* ===== DETAIL PAGE ===== */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        .back-btn {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .episode-details {
+            display: grid;
+            gap: 40px;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        .detail-section {
+            background: rgba(26, 31, 58, 0.5);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+        
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .message-item {
+            padding: 20px;
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            animation: slideInLeft 0.3s ease-out;
+        }
+        
+        .message-speaker {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        
+        .message-text {
             color: var(--text-secondary);
-            font-size: 1.1em;
-            margin-bottom: 30px;
+            line-height: 1.6;
+            font-size: 0.95em;
         }
         
-        .loading {
+        .audio-players {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .audio-item {
+            background: rgba(99, 102, 241, 0.05);
+            border: 1px solid rgba(99, 102, 241, 0.1);
+            border-radius: 10px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+        
+        .audio-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        
+        .audio-label {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        audio {
+            width: 100%;
+            height: 40px;
+            accent-color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 10px;
+            padding: 16px;
             text-align: center;
-            padding: 40px;
-            font-size: 1.2em;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
             color: var(--text-secondary);
+            margin-top: 8px;
         }
         
-        .loading::after {
-            content: '';
-            display: inline-block;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
-        
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(99, 102, 241, 0.3);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* Scrollbar styling */
+        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar {
-            width: 10px;
+            width: 8px;
         }
         
         ::-webkit-scrollbar-track {
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 10px;
+            background: transparent;
         }
         
         ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 10px;
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 4px;
         }
         
         ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            background: rgba(99, 102, 241, 0.5);
         }
         
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            header h1 {
-                font-size: 2.5em;
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                padding: 20px;
+                border-right: none;
+                border-bottom: 1px solid rgba(99, 102, 241, 0.1);
+                z-index: 10;
+                flex-direction: row;
+                gap: 20px;
+                padding-bottom: 20px;
+            }
+            
+            .content {
+                margin-top: 200px;
+            }
+            
+            .app {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
             }
             
             .episodes-grid {
                 grid-template-columns: 1fr;
             }
             
-            .stats {
-                grid-template-columns: 1fr;
+            .page {
+                padding: 30px 20px;
+            }
+            
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎙️ AI Roundtable</h1>
-            <p>Intelligent Panel Discussions</p>
-            <div class="subtitle">Government Jobs & Travel Destinations</div>
-        </header>
-        
-        <div class="controls">
-            <select id="topic-selector" style="
-                background: rgba(30, 41, 59, 0.8);
-                color: var(--text-primary);
-                border: 2px solid rgba(99, 102, 241, 0.3);
-                padding: 15px 25px;
-                font-size: 1.1em;
-                border-radius: 12px;
-                cursor: pointer;
-                font-weight: 600;
-                backdrop-filter: blur(10px);
-                transition: all 0.3s ease;
-            " onchange="updateTopicDescription()">
-                <option value="government_jobs">🏛️ Government Jobs & Exams</option>
-                <option value="travel">✈️ Travel Destinations</option>
-            </select>
-            <button class="primary" onclick="generateNewEpisode()">
-                <span id="generate-text">🎬 Generate New Episode</span>
-            </button>
-            <button class="secondary" onclick="refreshEpisodes()">🔄 Refresh Episodes</button>
-        </div>
-        
-        <div id="topic-description" style="
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        ">
-            <p style="color: var(--text-secondary); font-size: 1.1em;">
-                🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths
-            </p>
-        </div>
-        
-        <div class="stats" id="stats">
-            <div class="stat">
-                <div class="stat-value" id="episode-count">0</div>
-                <div class="stat-label">📺 Episodes Created</div>
+    <div class="app">
+        <!-- SIDEBAR NAVIGATION -->
+        <div class="sidebar">
+            <div class="logo" onclick="showPage('home')">🎙️ AI Roundtable</div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <button class="nav-btn active" onclick="showPage('home')">📺 All Episodes</button>
+                <button class="nav-btn" onclick="showPage('create')">➕ Create Episode</button>
             </div>
-            <div class="stat">
-                <div class="stat-value" id="audio-count">0</div>
-                <div class="stat-label">🎵 Audio Files</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="total-size">0 MB</div>
-                <div class="stat-label">💾 Storage Used</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="total-turns">0</div>
-                <div class="stat-label">💬 Total Discussions</div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Topics</div>
+                <button class="nav-btn" onclick="filterByTopic('government_jobs')">🏛️ Government Jobs</button>
+                <button class="nav-btn" onclick="filterByTopic('travel')">✈️ Travel</button>
             </div>
         </div>
         
-        <div id="episodes-container"></div>
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            <!-- HOME PAGE -->
+            <div id="home" class="page active">
+                <div class="header">
+                    <h1>Podcast Episodes</h1>
+                    <p>Intelligent panel discussions powered by AI</p>
+                </div>
+                
+                <div id="episodes-container"></div>
+            </div>
+            
+            <!-- CREATE PAGE -->
+            <div id="create" class="page">
+                <div class="header">
+                    <h1>Create New Episode</h1>
+                    <p>Generate a new AI-powered discussion</p>
+                </div>
+                
+                <div style="max-width: 600px;">
+                    <div class="topic-selector-container">
+                        <select id="topic-selector" onchange="updateTopicDescription()">
+                            <option value="government_jobs">🏛️ Government Jobs & Exams</option>
+                            <option value="travel">✈️ Travel Destinations</option>
+                        </select>
+                    </div>
+                    
+                    <div class="topic-description" id="topic-description">
+                        <p>🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India</p>
+                    </div>
+                    
+                    <button class="btn" onclick="generateNewEpisode()" id="generate-btn">
+                        <span id="generate-text">🎬 Generate Episode</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- DETAIL PAGE -->
+            <div id="detail" class="page">
+                <div class="detail-header">
+                    <h1 id="detail-title">Episode Details</h1>
+                    <button class="back-btn" onclick="showPage('home')">← Back</button>
+                </div>
+                
+                <div id="detail-content" class="episode-details"></div>
+            </div>
+        </div>
     </div>
     
     <script>
-        async function loadEpisodes() {
-            try {
-                const response = await fetch('/api/episodes');
-                const data = await response.json();
-                displayEpisodes(data);
-            } catch (error) {
-                console.error('Error loading episodes:', error);
-                document.getElementById('episodes-container').innerHTML = `
-                    <div class="empty-state">
-                        <h2>🎬 No Episodes Yet</h2>
-                        <p>Start creating amazing AI-powered discussions!</p>
-                    </div>
-                `;
-            }
-        }
+        let currentFilter = null;
+        let currentEpisode = null;
         
-        async function loadAudioFiles() {
-            try {
-                const response = await fetch('/api/audio-files');
-                const files = await response.json();
-                updateStats(files);
-            } catch (error) {
-                console.error('Error loading audio files:', error);
-            }
-        }
-        
-        function displayEpisodes(data) {
-            const container = document.getElementById('episodes-container');
-            
-            if (!data.episodes || data.episodes.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <h2>🎬 No Episodes Yet</h2>
-                        <p>Start creating amazing AI-powered discussions by clicking "Generate New Episode"!</p>
-                    </div>
-                `;
-                updateStatsCount(0, 0);
-                return;
-            }
-            
-            let totalTurns = 0;
-            const html = data.episodes.map((ep, idx) => {
-                totalTurns += ep.turns_count;
-                const date = new Date(ep.created_at);
-                return `
-                    <div class="episode-card" style="animation-delay: ${idx * 0.1}s">
-                        <div class="episode-header">
-                            <div class="episode-icon">🎤</div>
-                            <h3>${ep.topic}</h3>
-                        </div>
-                        <div class="episode-meta">
-                            <div class="meta-item">📅 ${date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
-                            <div class="meta-item">🗣️ ${ep.turns_count} turns</div>
-                            <div class="meta-item">🎵 ${ep.audio_files.length} audios</div>
-                        </div>
-                        <div class="audio-files">
-                            ${ep.audio_files.length > 0 ? 
-                                ep.audio_files.map((file, i) => `
-                                    <div class="audio-item">
-                                        <div style="font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px;">
-                                            🎵 Turn ${i + 1}
-                                        </div>
-                                        <audio controls style="width: 100%; height: 35px;">
-                                            <source src="${file}" type="audio/aiff">
-                                            <source src="${file}" type="audio/wav">
-                                            <source src="${file}" type="audio/mpeg">
-                                            Your browser does not support the audio element.
-                                        </audio>
-                                    </div>
-                                `).join('') 
-                                : '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No audio files</p>'
-                            }
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            container.innerHTML = `<div class="episodes-grid">${html}</div>`;
-            updateStatsCount(data.episodes.length, totalTurns);
-        }
-        
-        function updateStats(files) {
-            let totalSize = 0;
-            files.forEach(f => totalSize += f.size);
-            
-            document.getElementById('audio-count').textContent = files.length;
-            document.getElementById('total-size').textContent = (totalSize / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-        
-        function updateStatsCount(episodes, turns) {
-            document.getElementById('episode-count').textContent = episodes;
-            document.getElementById('total-turns').textContent = turns;
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
         }
         
         function updateTopicDescription() {
@@ -574,43 +648,159 @@
             
             if (topic === 'travel') {
                 desc.innerHTML = `
-                    <p style="color: var(--text-secondary); font-size: 1.1em;">
-                        ✈️ 4 Travelers Share: Salt Lake City 🇺🇸 • Abu Dhabi 🇦🇪 • Chennai & Bangalore 🇮🇳 • Manchester 🇬🇧
-                    </p>
-                    <p style="color: var(--text-secondary); font-size: 0.9em; margin-top: 10px; opacity: 0.8;">
+                    <p>✈️ 4 Travelers Share: Salt Lake City 🇺🇸 • Abu Dhabi 🇦🇪 • Chennai & Bangalore 🇮🇳 • Manchester 🇬🇧</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
                         Elena (Spain 🇪🇸 - Visited) • Fatima (UAE 🇦🇪 - Researcher) • Priya (India 🇮🇳 - Sister Lives There) • Carlos (Mexico 🇲🇽 - Planning to Move)
                     </p>
                 `;
             } else {
-                desc.innerHTML = `
-                    <p style="color: var(--text-secondary); font-size: 1.1em;">
-                        🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India
-                    </p>
+                desc.innerHTML = `<p>🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India</p>`;
+            }
+        }
+        
+        function filterByTopic(topic) {
+            currentFilter = topic;
+            loadEpisodes();
+        }
+        
+        async function loadEpisodes() {
+            try {
+                const response = await fetch('/api/episodes');
+                const data = await response.json();
+                
+                let episodes = data.episodes || [];
+                if (currentFilter) {
+                    episodes = episodes.filter(ep => {
+                        if (currentFilter === 'travel') return ep.topic.includes('Travel');
+                        if (currentFilter === 'government_jobs') return ep.topic.includes('Government');
+                        return true;
+                    });
+                }
+                
+                displayEpisodes(episodes);
+            } catch (error) {
+                console.error('Error loading episodes:', error);
+            }
+        }
+        
+        function displayEpisodes(episodes) {
+            const container = document.getElementById('episodes-container');
+            
+            if (!episodes || episodes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No Episodes Yet</h2>
+                        <p>Create your first episode to get started!</p>
+                    </div>
                 `;
+                return;
+            }
+            
+            const html = episodes.map((ep, idx) => {
+                const date = new Date(ep.created_at);
+                const icon = ep.topic.includes('Travel') ? '✈️' : '🏛️';
+                
+                return `
+                    <div class="episode-card" style="animation-delay: ${idx * 0.1}s">
+                        <div class="episode-icon">${icon}</div>
+                        <div class="episode-title">${ep.topic}</div>
+                        <div class="episode-meta">
+                            <div class="meta-item">📅 ${date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                            <div class="meta-item">🗣️ ${ep.turns_count} turns</div>
+                            <div class="meta-item">🎵 ${ep.audio_files?.length || 0} audios</div>
+                        </div>
+                        <button class="view-btn" onclick="viewEpisode('${ep.id}')">View Details →</button>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `<div class="episodes-grid">${html}</div>`;
+        }
+        
+        async function viewEpisode(episodeId) {
+            try {
+                const response = await fetch('/api/episodes');
+                const data = await response.json();
+                const episode = data.episodes.find(ep => ep.id === episodeId);
+                
+                if (!episode) return;
+                
+                currentEpisode = episode;
+                document.getElementById('detail-title').textContent = episode.topic;
+                
+                let html = `
+                    <div class="detail-section">
+                        <div class="section-title">📊 Episode Info</div>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-value">${episode.turns_count}</div>
+                                <div class="stat-label">Total Turns</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${episode.audio_files?.length || 0}</div>
+                                <div class="stat-label">Audio Files</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${new Date(episode.created_at).toLocaleDateString('en-IN')}</div>
+                                <div class="stat-label">Created Date</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                if (episode.audio_files && episode.audio_files.length > 0) {
+                    html += `
+                        <div class="detail-section">
+                            <div class="section-title">🎵 Audio Playback</div>
+                            <div class="audio-players">
+                                ${episode.audio_files.map((file, i) => `
+                                    <div class="audio-item">
+                                        <div class="audio-label">Turn ${i + 1}</div>
+                                        <audio controls>
+                                            <source src="${file}" type="audio/wav">
+                                            <source src="${file}" type="audio/aiff">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('detail-content').innerHTML = html;
+                showPage('detail');
+            } catch (error) {
+                console.error('Error viewing episode:', error);
             }
         }
         
         async function generateNewEpisode() {
-            const btn = event.target.closest('button');
+            const btn = document.getElementById('generate-btn');
             const text = document.getElementById('generate-text');
             const topic = document.getElementById('topic-selector').value;
+            
             btn.disabled = true;
             const originalText = text.textContent;
-            text.innerHTML = '<div class="spinner"></div> Generating...';
+            text.textContent = '⏳ Generating...';
             
             try {
                 const response = await fetch(`/generate?tts=true&topic=${topic}`, { method: 'POST' });
                 if (response.ok) {
                     await new Promise(r => setTimeout(r, 2000));
-                    await refreshEpisodes();
-                    text.textContent = originalText;
-                    btn.disabled = false;
+                    text.textContent = '✅ Complete!';
+                    await loadEpisodes();
+                    showPage('home');
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
                 } else {
-                    throw new Error('Failed to generate episode');
+                    throw new Error('Generation failed');
                 }
             } catch (error) {
-                console.error('Error generating episode:', error);
-                text.textContent = '❌ Error - Try Again';
+                console.error('Error:', error);
+                text.textContent = '❌ Error';
                 btn.disabled = false;
                 setTimeout(() => {
                     text.textContent = originalText;
@@ -618,19 +808,8 @@
             }
         }
         
-        async function refreshEpisodes() {
-            await loadEpisodes();
-            await loadAudioFiles();
-        }
-        
-        // Load on page load
-        window.addEventListener('load', () => {
-            loadEpisodes();
-            loadAudioFiles();
-        });
-        
-        // Auto-refresh every 30 seconds
-        setInterval(refreshEpisodes, 30000);
+        window.addEventListener('load', loadEpisodes);
+        updateTopicDescription();
     </script>
 </body>
 </html>
