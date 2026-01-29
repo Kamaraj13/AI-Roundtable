@@ -1,5 +1,6 @@
 # main.py
 
+import os
 import logging
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -16,8 +17,12 @@ app = FastAPI(title="AI Roundtable", description="AI-powered panel discussions")
 
 logger = logging.getLogger(__name__)
 
+# Create tts_output directory if it doesn't exist
+os.makedirs("tts_output", exist_ok=True)
+
 # Mount static files
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/tts_output", StaticFiles(directory="tts_output"), name="tts_output")
 
 # Setup background scheduler for cleanup
 scheduler = BackgroundScheduler()
