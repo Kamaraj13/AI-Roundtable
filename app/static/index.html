@@ -11,117 +11,275 @@
             box-sizing: border-box;
         }
         
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --dark-bg: #0f172a;
+            --light-bg: #f8fafc;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, #1e3a8a 50%, #7c2d12 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
         }
         
         header {
             text-align: center;
-            color: white;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease-out;
         }
         
         header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 4em;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #6366f1, #ec4899, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+            letter-spacing: -2px;
         }
         
         header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+            font-size: 1.3em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            font-size: 1em;
+            color: var(--text-secondary);
+            opacity: 0.8;
         }
         
         .controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 15px;
+            margin-bottom: 40px;
             justify-content: center;
             flex-wrap: wrap;
+            animation: fadeIn 1s ease-out 0.3s both;
         }
         
         button {
-            background: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            padding: 12px 24px;
-            border-radius: 25px;
+            padding: 14px 32px;
+            border-radius: 50px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.05em;
+            font-weight: 600;
+            color: white;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.5);
         }
         
-        button.primary {
-            background: #667eea;
-            color: white;
+        button:active {
+            transform: translateY(-1px);
         }
         
-        button.primary:hover {
-            background: #5568d3;
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        button.secondary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        button.secondary:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+        
+        .stats {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));
+            border-radius: 15px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.2);
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1em;
+            font-weight: 500;
         }
         
         .episodes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px;
             margin-bottom: 30px;
         }
         
         .episode-card {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
+            animation: fadeIn 0.6s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .episode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .episode-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
         }
         
-        .episode-card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 1.2em;
+        .episode-card:hover::before {
+            opacity: 1;
         }
         
-        .episode-meta {
-            color: #666;
-            font-size: 0.9em;
+        .episode-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
             margin-bottom: 15px;
         }
         
-        .episode-meta span {
-            display: inline-block;
-            margin-right: 15px;
+        .episode-icon {
+            font-size: 2em;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .episode-card h3 {
+            color: white;
+            font-size: 1.3em;
+            margin-bottom: 5px;
+            line-height: 1.4;
+            flex: 1;
+        }
+        
+        .episode-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            border: 1px solid rgba(99, 102, 241, 0.2);
         }
         
         .audio-files {
-            max-height: 200px;
+            max-height: 250px;
             overflow-y: auto;
-            background: #f5f5f5;
-            border-radius: 5px;
-            padding: 10px;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
         }
         
         .audio-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #ddd;
-            font-size: 0.9em;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(99, 102, 241, 0.1);
         }
         
         .audio-item:last-child {
@@ -130,51 +288,122 @@
         
         .audio-item audio {
             width: 100%;
-            margin-top: 5px;
+            height: 35px;
             cursor: pointer;
+            accent-color: var(--primary);
         }
         
-        .loading {
-            text-align: center;
-            color: white;
-            font-size: 1.2em;
-        }
-        
-        .stats {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 5px;
+        .audio-item audio::-webkit-media-controls-panel {
+            background-color: rgba(99, 102, 241, 0.2);
         }
         
         .empty-state {
             text-align: center;
-            color: white;
-            padding: 40px;
+            padding: 60px 40px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 2px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            animation: fadeIn 0.8s ease-out;
         }
         
         .empty-state h2 {
-            margin-bottom: 10px;
+            font-size: 2em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2em;
+            color: var(--text-secondary);
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5em;
+            }
+            
+            .episodes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -182,26 +411,33 @@
     <div class="container">
         <header>
             <h1>🎙️ AI Roundtable</h1>
-            <p>AI-powered panel discussions on Government Jobs and Exams in India</p>
+            <p>Intelligent Panel Discussions</p>
+            <div class="subtitle">Government Jobs & Exams in India</div>
         </header>
         
         <div class="controls">
-            <button class="primary" onclick="generateNewEpisode()">🎬 Generate New Episode</button>
-            <button onclick="refreshEpisodes()">🔄 Refresh</button>
+            <button class="primary" onclick="generateNewEpisode()">
+                <span id="generate-text">🎬 Generate New Episode</span>
+            </button>
+            <button class="secondary" onclick="refreshEpisodes()">🔄 Refresh Episodes</button>
         </div>
         
         <div class="stats" id="stats">
             <div class="stat">
                 <div class="stat-value" id="episode-count">0</div>
-                <div class="stat-label">Episodes</div>
+                <div class="stat-label">📺 Episodes Created</div>
             </div>
             <div class="stat">
                 <div class="stat-value" id="audio-count">0</div>
-                <div class="stat-label">Audio Files</div>
+                <div class="stat-label">🎵 Audio Files</div>
             </div>
             <div class="stat">
                 <div class="stat-value" id="total-size">0 MB</div>
-                <div class="stat-label">Total Size</div>
+                <div class="stat-label">💾 Storage Used</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="total-turns">0</div>
+                <div class="stat-label">💬 Total Discussions</div>
             </div>
         </div>
         
@@ -218,8 +454,8 @@
                 console.error('Error loading episodes:', error);
                 document.getElementById('episodes-container').innerHTML = `
                     <div class="empty-state">
-                        <h2>No episodes yet</h2>
-                        <p>Click "Generate New Episode" to create one!</p>
+                        <h2>🎬 No Episodes Yet</h2>
+                        <p>Start creating amazing AI-powered discussions!</p>
                     </div>
                 `;
             }
@@ -241,35 +477,48 @@
             if (!data.episodes || data.episodes.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h2>No episodes yet</h2>
-                        <p>Click "Generate New Episode" to create one!</p>
+                        <h2>🎬 No Episodes Yet</h2>
+                        <p>Start creating amazing AI-powered discussions by clicking "Generate New Episode"!</p>
                     </div>
                 `;
+                updateStatsCount(0, 0);
                 return;
             }
             
-            const html = data.episodes.map(ep => `
-                <div class="episode-card">
-                    <h3>📻 ${ep.topic}</h3>
-                    <div class="episode-meta">
-                        <span>📅 ${new Date(ep.created_at).toLocaleDateString()}</span>
-                        <span>🗣️ ${ep.turns_count} turns</span>
-                        <span>🎵 ${ep.audio_files.length} audio files</span>
+            let totalTurns = 0;
+            const html = data.episodes.map((ep, idx) => {
+                totalTurns += ep.turns_count;
+                const date = new Date(ep.created_at);
+                return `
+                    <div class="episode-card" style="animation-delay: ${idx * 0.1}s">
+                        <div class="episode-header">
+                            <div class="episode-icon">🎤</div>
+                            <h3>${ep.topic}</h3>
+                        </div>
+                        <div class="episode-meta">
+                            <div class="meta-item">📅 ${date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                            <div class="meta-item">🗣️ ${ep.turns_count} turns</div>
+                            <div class="meta-item">🎵 ${ep.audio_files.length} audios</div>
+                        </div>
+                        <div class="audio-files">
+                            ${ep.audio_files.length > 0 ? 
+                                ep.audio_files.map(file => `
+                                    <div class="audio-item">
+                                        <audio controls style="width: 100%; height: 30px;">
+                                            <source src="${file}" type="audio/wav">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                    </div>
+                                `).join('') 
+                                : '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No audio files</p>'
+                            }
+                        </div>
                     </div>
-                    <div class="audio-files">
-                        ${ep.audio_files.map(file => `
-                            <div class="audio-item">
-                                <audio controls style="width: 100%; height: 30px;">
-                                    <source src="${file}" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
             
             container.innerHTML = `<div class="episodes-grid">${html}</div>`;
+            updateStatsCount(data.episodes.length, totalTurns);
         }
         
         function updateStats(files) {
@@ -280,23 +529,35 @@
             document.getElementById('total-size').textContent = (totalSize / (1024 * 1024)).toFixed(1) + ' MB';
         }
         
+        function updateStatsCount(episodes, turns) {
+            document.getElementById('episode-count').textContent = episodes;
+            document.getElementById('total-turns').textContent = turns;
+        }
+        
         async function generateNewEpisode() {
-            const btn = event.target;
+            const btn = event.target.closest('button');
+            const text = document.getElementById('generate-text');
             btn.disabled = true;
-            btn.textContent = '⏳ Generating...';
+            const originalText = text.textContent;
+            text.innerHTML = '<div class="spinner"></div> Generating...';
             
             try {
                 const response = await fetch('/generate?tts=true', { method: 'POST' });
                 if (response.ok) {
                     await new Promise(r => setTimeout(r, 2000));
                     await refreshEpisodes();
-                    btn.textContent = '🎬 Generate New Episode';
+                    text.textContent = originalText;
                     btn.disabled = false;
+                } else {
+                    throw new Error('Failed to generate episode');
                 }
             } catch (error) {
                 console.error('Error generating episode:', error);
-                btn.textContent = '🎬 Generate New Episode';
+                text.textContent = '❌ Error - Try Again';
                 btn.disabled = false;
+                setTimeout(() => {
+                    text.textContent = originalText;
+                }, 3000);
             }
         }
         
