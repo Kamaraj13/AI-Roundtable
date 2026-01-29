@@ -101,18 +101,24 @@ NO extra text. NO markdown. NO commentary.
 
 
 def parse_responses(text):
-    # Try direct JSON
+    text = text.strip()
+
+    # Case 1: Already valid JSON
     try:
-        return attach_accents(json.loads(text))
+        return json.loads(text)
     except:
         pass
 
-    # Try extracting JSON list using regex
-    try:
-        json_str = re.search(r"`\(⁠.*\)`", text, re.DOTALL).group(0)
-        return attach_accents(json.loads(json_str))
-    except:
-        raise RuntimeError(f"Groq returned invalid JSON:\n{text}")
+    # Case 2: Extract JSON from inside backticks or weird wrappers
+    match = re.search(r"\[.*\]", text, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except:
+            pass
+
+    raise RuntimeError(f"Groq returned invalid JSON:\n{text}")
+
 
 
 def attach_accents(data):
