@@ -9,6 +9,12 @@ cd "$SCRIPT_DIR"
 
 echo "🚀 Starting AI Roundtable + ngrok"
 
+# Activate venv if available (for consistent python/pip/curl behavior)
+if [ -f "$SCRIPT_DIR/venv/bin/activate" ]; then
+    # shellcheck disable=SC1091
+    source "$SCRIPT_DIR/venv/bin/activate"
+fi
+
 # Start server in background if not already running
 if ! pgrep -f "uvicorn app.main:app" >/dev/null; then
     echo "🎙️  Starting server in background..."
@@ -53,7 +59,30 @@ if [ -n "$PUBLIC_URL" ]; then
     echo "✅ Public URL: $PUBLIC_URL"
     echo "🌍 Open: $PUBLIC_URL/ui"
 else
-    echo "⚠️  Could not determine ngrok URL. Check logs:"
-    echo "   - tail -f ngrok.log"
-    echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
+    echo "⚠️  Could not determine ngrok URL. Restarting ngrok..."
+    pkill -f "ngrok" >/dev/null 2>&1 || true
+    nohup "$SCRIPT_DIR/start-ngrok-tunnel.sh" > ngrok.log 2>&1 &
+    sleep 3
+
+    PUBLIC_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 - <<'PY'
+import json,sys
+try:
+    data=json.load(sys.stdin)
+    for t in data.get("tunnels", []):
+        if t.get("public_url"):
+            print(t.get("public_url"))
+            break
+except Exception:
+    pass
+PY
+)
+
+    if [ -n "$PUBLIC_URL" ]; then
+        echo "✅ Public URL: $PUBLIC_URL"
+        echo "🌍 Open: $PUBLIC_URL/ui"
+    else
+        echo "⚠️  Still unable to determine ngrok URL. Check logs:"
+        echo "   - tail -f ngrok.log"
+        echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
+    fi
 fi
