@@ -696,6 +696,9 @@
                 <div class="nav-title">Topics</div>
                 <button class="nav-btn" onclick="filterByTopic('government_jobs')">🏛️ Government Jobs</button>
                 <button class="nav-btn" onclick="filterByTopic('travel')">✈️ Travel</button>
+                <button class="nav-btn" onclick="filterByTopic('tech_startup')">💻 Tech Startups</button>
+                <button class="nav-btn" onclick="filterByTopic('personal_finance')">💰 Personal Finance</button>
+                <button class="nav-btn" onclick="filterByTopic('mental_health')">🧠 Mental Health</button>
             </div>
             
             <div class="theme-toggle" onclick="toggleTheme()">
@@ -884,6 +887,9 @@
                     episodes = episodes.filter(ep => {
                         if (currentFilter === 'travel') return ep.topic.includes('Travel');
                         if (currentFilter === 'government_jobs') return ep.topic.includes('Government');
+                        if (currentFilter === 'tech_startup') return ep.topic.includes('Tech Startup') || ep.topic.includes('Entrepreneurship');
+                        if (currentFilter === 'personal_finance') return ep.topic.includes('Personal Finance') || ep.topic.includes('Wealth');
+                        if (currentFilter === 'mental_health') return ep.topic.includes('Mental Health') || ep.topic.includes('Wellness');
                         return true;
                     });
                 }
@@ -909,7 +915,12 @@
             
             const html = episodes.map((ep, idx) => {
                 const date = new Date(ep.created_at);
-                const icon = ep.topic.includes('Travel') ? '✈️' : '🏛️';
+                let icon = '🏛️';
+                if (ep.topic.includes('Travel')) icon = '✈️';
+                else if (ep.topic.includes('Tech Startup') || ep.topic.includes('Entrepreneurship')) icon = '💻';
+                else if (ep.topic.includes('Personal Finance') || ep.topic.includes('Wealth')) icon = '💰';
+                else if (ep.topic.includes('Mental Health') || ep.topic.includes('Wellness')) icon = '🧠';
+                else if (ep.topic.includes('Government')) icon = '🏛️';
                 
                 return `
                     <div class="episode-card" style="animation-delay: ${idx * 0.1}s">
@@ -967,9 +978,10 @@
                                 ${episode.audio_files.map((file, i) => `
                                     <div class="audio-item">
                                         <div class="audio-label">Turn ${i + 1}</div>
-                                        <audio controls>
-                                            <source src="${file}" type="audio/wav">
+                                        <audio controls preload="metadata">
                                             <source src="${file}" type="audio/aiff">
+                                            <source src="${file}" type="audio/x-aiff">
+                                            <source src="${file}" type="audio/wav">
                                             Your browser does not support the audio element.
                                         </audio>
                                     </div>
