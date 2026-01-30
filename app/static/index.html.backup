@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎙️ AI Roundtable - Podcast Episodes</title>
+    <link rel="icon" href="/static/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/static/assets/app-icon.png" />
+    <meta property="og:title" content="AI Roundtable" />
+    <meta property="og:description" content="Intelligent panel discussions powered by AI." />
+    <meta property="og:image" content="/static/assets/social-card.jpg" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            /* Day Mode (Pleasant Yellow/Orange) */
+            --primary: #0ea5e9;
+            --secondary: #10b981;
+            --accent: #fbbf24;
+            --dark-bg: #0a0e27;
+            --card-bg: #1a1f3a;
+            --text-primary: #ffffff;
+            --text-secondary: #a8b5d1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --blur: 20px;
+            --bg-gradient-1: #3d3520;
+            --bg-gradient-2: #4a3918;
+            --bg-gradient-3: #3f2e16;
+            --radial-1: rgba(251, 191, 36, 0.15);
+            --radial-2: rgba(249, 115, 22, 0.15);
+        }
+        
+        body.night-mode {
+            /* Night Mode (Purple/Pink/Orange) */
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --bg-gradient-1: #0a0e27;
+            --bg-gradient-2: #0f1b35;
+            --bg-gradient-3: #1a0f2e;
+            --radial-1: rgba(99, 102, 241, 0.08);
+            --radial-2: rgba(236, 72, 153, 0.08);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
+            background-attachment: fixed;
+            transition: background 0.6s ease;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Animated background with glassmorphism particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, var(--radial-1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, var(--radial-2) 0%, transparent 50%);
+            transition: background 0.6s ease;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .app {
+            display: flex;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ===== SIDEBAR NAVIGATION ===== */
+        .sidebar {
+            width: 280px;
+            background: rgba(26, 31, 58, 0.7);
+            backdrop-filter: blur(var(--blur));
+            border-right: 1px solid rgba(14, 165, 233, 0.1);
+            padding: 40px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            overflow-y: auto;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.8em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .theme-toggle {
+            margin-top: auto;
+            padding: 14px;
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(var(--blur));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95em;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(26, 31, 58, 1);
+            border-color: var(--primary);
+            transform: scale(1.02);
+        }
+        
+        .theme-icon {
+            font-size: 1.4em;
+            transition: transform 0.3s;
+        }
+        
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(20deg);
+        }
+        
+        .nav-title {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            opacity: 0.6;
+            margin-bottom: 8px;
+        }
+        
+        .nav-btn {
+            padding: 14px 16px;
+            background: transparent;
+            border: 2px solid transparent;
+            color: var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-align: left;
+        }
+        
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.3);
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.1));
+            border-color: var(--primary);
+            color: var(--text-primary);
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.15);
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+        
+        /* Page animations */
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+            padding: 60px 50px;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* ===== HOME PAGE ===== */
+        .header {
+            margin-bottom: 50px;
+            animation: slideInLeft 0.6s ease-out 0.1s both;
+        }
+
+        .hero {
+            position: relative;
+            border-radius: 22px;
+            padding: 48px 42px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.15));
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('/static/assets/hero.jpg') center/cover no-repeat;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+        }
+
+        .hero-title {
+            font-size: 3.2em;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #10b981, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .header h1 {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #10b981, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+        
+        .topic-selector-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            animation: slideInLeft 0.6s ease-out 0.2s both;
+        }
+        
+        .topic-selector-container select {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(var(--blur));
+            color: var(--text-primary);
+            border: 2px solid rgba(14, 165, 233, 0.3);
+            padding: 14px 20px;
+            font-size: 1em;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-width: 280px;
+        }
+        
+        .topic-selector-container select:hover {
+            border-color: var(--primary);
+            background: rgba(26, 31, 58, 0.95);
+        }
+        
+        .topic-selector-container select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(14, 165, 233, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .topic-description {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 40px;
+            animation: slideInLeft 0.6s ease-out 0.3s both;
+        }
+        
+        .topic-description p {
+            color: var(--text-secondary);
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin: 8px 0;
+        }
+
+        .topic-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin: 24px 0 10px;
+        }
+
+        .topic-card {
+            background: rgba(26, 31, 58, 0.55);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            text-align: center;
+            min-height: 180px;
+        }
+
+        .topic-card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .topic-card span {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--text-primary);
+        }
+        
+        /* ===== EPISODES GRID ===== */
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            animation: slideInLeft 0.6s ease-out 0.2s both;
+        }
+        
+        .episode-card {
+            background: rgba(26, 31, 58, 0.5);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .episode-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .episode-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(14, 165, 233, 0.3);
+            background: rgba(26, 31, 58, 0.8);
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+        }
+        
+        .episode-card:hover::before {
+            opacity: 1;
+        }
+        
+        .episode-icon {
+            font-size: 2.5em;
+            margin-bottom: 16px;
+        }
+        
+        .episode-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+        
+        .episode-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .view-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            color: var(--primary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .view-btn:hover {
+            background: rgba(14, 165, 233, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: var(--text-secondary);
+        }
+        
+        .empty-state h2 {
+            font-size: 2em;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        /* ===== DETAIL PAGE ===== */
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        .back-btn {
+            background: rgba(14, 165, 233, 0.2);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: rgba(14, 165, 233, 0.3);
+            border-color: var(--primary);
+        }
+        
+        .episode-details {
+            display: grid;
+            gap: 40px;
+            animation: slideInLeft 0.5s ease-out;
+        }
+        
+        .detail-section {
+            background: rgba(26, 31, 58, 0.5);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+        
+        .conversation {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .message-item {
+            padding: 20px;
+            background: rgba(14, 165, 233, 0.05);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            animation: slideInLeft 0.3s ease-out;
+        }
+        
+        .message-speaker {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+        
+        .message-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+        
+        .audio-players {
+            display: grid;
+            gap: 16px;
+        }
+        
+        .audio-item {
+            background: rgba(14, 165, 233, 0.05);
+            border: 1px solid rgba(14, 165, 233, 0.1);
+            border-radius: 10px;
+            padding: 16px;
+            transition: all 0.3s;
+        }
+        
+        .audio-item:hover {
+            background: rgba(14, 165, 233, 0.1);
+            border-color: rgba(14, 165, 233, 0.2);
+        }
+        
+        .audio-label {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .audio-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .audio-link:hover {
+            text-decoration: underline;
+        }
+        
+        audio {
+            width: 100%;
+            height: 40px;
+            accent-color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        /* ===== PONG GAME PAGE ===== */
+        #pong-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+        }
+        
+        #pongCanvas {
+            background: rgba(26, 31, 58, 0.8);
+            backdrop-filter: blur(var(--blur));
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            cursor: none;
+            box-shadow: 0 0 40px rgba(14, 165, 233, 0.3);
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .pong-info {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+        
+        .pong-controls {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .pong-controls h3 {
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+        
+        .pong-controls p {
+            color: var(--text-secondary);
+            margin: 8px 0;
+            font-size: 0.95em;
+        }
+        
+        .score-display {
+            background: rgba(26, 31, 58, 0.6);
+            backdrop-filter: blur(var(--blur));
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.3);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.5);
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                padding: 20px;
+                border-right: none;
+                border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+                z-index: 10;
+                flex-direction: row;
+                gap: 20px;
+                padding-bottom: 20px;
+            }
+            
+            .content {
+                margin-top: 200px;
+            }
+            
+            .app {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .episodes-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page {
+                padding: 30px 20px;
+            }
+            
+            .detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- SIDEBAR NAVIGATION -->
+        <div class="sidebar">
+            <div class="logo" onclick="showPage('home')">
+                <img class="logo-mark" src="/static/assets/logo.png" alt="AI Roundtable" onerror="this.style.display='none'" />
+                <span>AI Roundtable</span>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Navigation</div>
+                <button class="nav-btn active" onclick="clearFilter()">📺 All Episodes</button>
+                <button class="nav-btn" onclick="showPage('create')">➕ Create Episode</button>
+                <button class="nav-btn" onclick="showPage('pong')">🎮 Play Pong</button>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Topics</div>
+                <button class="nav-btn" onclick="filterByTopic('government_jobs')">🏛️ Government Jobs</button>
+                <button class="nav-btn" onclick="filterByTopic('travel')">✈️ Travel</button>
+                <button class="nav-btn" onclick="filterByTopic('tech_startup')">💻 Tech Startups</button>
+                <button class="nav-btn" onclick="filterByTopic('personal_finance')">💰 Personal Finance</button>
+                <button class="nav-btn" onclick="filterByTopic('mental_health')">🧠 Mental Health</button>
+            </div>
+            
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <span>Theme</span>
+                <span class="theme-icon" id="theme-icon">☀️</span>
+            </div>
+        </div>
+        
+        <!-- MAIN CONTENT -->
+        <div class="content">
+            <!-- HOME PAGE -->
+            <div id="home" class="page active">
+                <div class="hero">
+                    <div class="hero-content">
+                        <div class="hero-title">AI Roundtable</div>
+                        <div class="hero-subtitle">Intelligent panel discussions powered by AI. Generate fresh episodes across tech, travel, finance, and more — with multi-voice audio.</div>
+                    </div>
+                </div>
+
+                <div class="header">
+                    <h1>Podcast Episodes</h1>
+                    <p>Browse and play your latest AI conversations</p>
+                </div>
+                
+                <div id="episodes-container"></div>
+            </div>
+            
+            <!-- CREATE PAGE -->
+            <div id="create" class="page">
+                <div class="header">
+                    <h1>Create New Episode</h1>
+                    <p>Generate a new AI-powered discussion</p>
+                </div>
+                
+                <div style="max-width: 860px;">
+                    <div class="topic-selector-container">
+                        <select id="topic-selector" onchange="updateTopicDescription()">
+                            <option value="government_jobs">🏛️ Government Jobs & Exams</option>
+                            <option value="travel">✈️ Travel Destinations</option>
+                            <option value="tech_startup">💻 Tech Startups & Entrepreneurship</option>
+                            <option value="personal_finance">💰 Personal Finance & Investing</option>
+                            <option value="mental_health">🧠 Mental Health & Wellness</option>
+                        </select>
+                    </div>
+                    
+                    <div class="topic-description" id="topic-description">
+                        <p>🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India</p>
+                    </div>
+
+                    <div class="topic-cards">
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_government_jobs.jpg" alt="Government Jobs" onerror="this.style.display='none'" />
+                            <span>🏛️ Government Jobs</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_travel.jpg" alt="Travel" onerror="this.style.display='none'" />
+                            <span>✈️ Travel</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_tech_startup.jpg" alt="Tech Startups" onerror="this.style.display='none'" />
+                            <span>💻 Tech Startups</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_personal_finance.jpg" alt="Personal Finance" onerror="this.style.display='none'" />
+                            <span>💰 Personal Finance</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_mental_health.jpg" alt="Mental Health" onerror="this.style.display='none'" />
+                            <span>🧠 Mental Health</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="generateNewEpisode()" id="generate-btn">
+                        <span id="generate-text">🎬 Generate Episode</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- DETAIL PAGE -->
+            <div id="detail" class="page">
+                <div class="detail-header">
+                    <h1 id="detail-title">Episode Details</h1>
+                    <button class="back-btn" onclick="showPage('home')">← Back</button>
+                </div>
+                
+                <div id="detail-content" class="episode-details"></div>
+            </div>
+            
+            <!-- PONG GAME PAGE -->
+            <div id="pong" class="page">
+                <div class="header" style="margin-bottom: 30px;">
+                    <h1>🎮 Pong Challenge</h1>
+                    <p>Stay focused while listening to podcasts - Play Pong!</p>
+                </div>
+                
+                <div id="pong-container">
+                    <div class="score-display" id="score-display">Player 1: 0 | Player 2: 0</div>
+                    <canvas id="pongCanvas" width="800" height="500"></canvas>
+                    
+                    <div class="pong-controls">
+                        <h3>How to Play</h3>
+                        <p><strong>Player 1 (Left):</strong> Use <kbd>W</kbd> and <kbd>S</kbd> keys</p>
+                        <p><strong>Player 2 (Right):</strong> Use <kbd>↑</kbd> and <kbd>↓</kbd> arrow keys</p>
+                        <p style="margin-top: 16px; font-size: 0.9em; opacity: 0.8;">Game starts automatically • Press any key to play</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentFilter = null;
+        let currentEpisode = null;
+        
+        // Theme Management
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.classList.contains('night-mode')) {
+                body.classList.remove('night-mode');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'day');
+            } else {
+                body.classList.add('night-mode');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'night');
+            }
+        }
+        
+        // Load saved theme on page load
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'night') {
+                document.body.classList.add('night-mode');
+                themeIcon.textContent = '🌙';
+            } else {
+                themeIcon.textContent = '☀️';
+            }
+        }
+        
+        // Initialize theme on page load
+        window.addEventListener('DOMContentLoaded', loadTheme);
+        
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        function updateTopicDescription() {
+            const topic = document.getElementById('topic-selector').value;
+            const desc = document.getElementById('topic-description');
+            
+            if (topic === 'travel') {
+                desc.innerHTML = `
+                    <p>✈️ 4 Travelers Share: Salt Lake City 🇺🇸 • Abu Dhabi 🇦🇪 • Chennai & Bangalore 🇮🇳 • Manchester 🇬🇧</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Elena (Spain 🇪🇸 - Visited) • Fatima (UAE 🇦🇪 - Researcher) • Priya (India 🇮🇳 - Sister Lives There) • Carlos (Mexico 🇲🇽 - Planning to Move)
+                    </p>
+                `;
+            } else if (topic === 'tech_startup') {
+                desc.innerHTML = `
+                    <p>💻 4 Founders Discuss: Finding PMF • Fundraising • Unit Economics • Hiring • Scaling</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Vikram (CEO 🇮🇳) • Sofia (Product Manager 🇪🇸) • Alex (CTO 🇺🇸) • Jasmine (Growth Lead 🇬🇧)
+                    </p>
+                `;
+            } else if (topic === 'personal_finance') {
+                desc.innerHTML = `
+                    <p>💰 4 Experts Cover: Budgeting • Investing • Debt Management • Real Estate • Retirement</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Raj (Financial Advisor 🇮🇳) • Isabella (Money Coach 🇮🇹) • Marcus (Entrepreneur 🇺🇸) • Priya (Student 🇮🇳)
+                    </p>
+                `;
+            } else if (topic === 'mental_health') {
+                desc.innerHTML = `
+                    <p>🧠 4 Professionals Share: Stress & Anxiety • Sleep • Relationships • Work-Life Balance • Self-Esteem</p>
+                    <p style="margin-top: 12px; color: var(--text-secondary); font-size: 0.95em;">
+                        Dr. Arjun (Psychologist 🇮🇳) • Luna (Life Coach 🇺🇸) • James (Mental Health Advocate 🇬🇧) • Divya (Wellness Officer 🇮🇳)
+                    </p>
+                `;
+            } else {
+                desc.innerHTML = `<p>🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India</p>`;
+            }
+        }
+        
+        function filterByTopic(topic) {
+            currentFilter = topic;
+            loadEpisodes();
+            showPage('home');  // Switch to home page to show filtered results
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        function clearFilter() {
+            currentFilter = null;
+            loadEpisodes();
+            showPage('home');
+            
+            // Update active nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.nav-btn')[0].classList.add('active');  // Mark "All Episodes" as active
+        }
+        
+        async function loadEpisodes() {
+            try {
+                const response = await fetch('/api/episodes');
+                const data = await response.json();
+                
+                let episodes = data.episodes || [];
+                if (currentFilter) {
+                    episodes = episodes.filter(ep => {
+                        if (currentFilter === 'travel') return ep.topic.includes('Travel');
+                        if (currentFilter === 'government_jobs') return ep.topic.includes('Government');
+                        if (currentFilter === 'tech_startup') return ep.topic.includes('Tech Startup') || ep.topic.includes('Entrepreneurship');
+                        if (currentFilter === 'personal_finance') return ep.topic.includes('Personal Finance') || ep.topic.includes('Wealth');
+                        if (currentFilter === 'mental_health') return ep.topic.includes('Mental Health') || ep.topic.includes('Wellness');
+                        return true;
+                    });
+                }
+                
+                displayEpisodes(episodes);
+            } catch (error) {
+                console.error('Error loading episodes:', error);
+            }
+        }
+        
+        function displayEpisodes(episodes) {
+            const container = document.getElementById('episodes-container');
+            
+            if (!episodes || episodes.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No Episodes Yet</h2>
+                        <p>Create your first episode to get started!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = episodes.map((ep, idx) => {
+                const date = new Date(ep.created_at);
+                let icon = '🏛️';
+                if (ep.topic.includes('Travel')) icon = '✈️';
+                else if (ep.topic.includes('Tech Startup') || ep.topic.includes('Entrepreneurship')) icon = '💻';
+                else if (ep.topic.includes('Personal Finance') || ep.topic.includes('Wealth')) icon = '💰';
+                else if (ep.topic.includes('Mental Health') || ep.topic.includes('Wellness')) icon = '🧠';
+                else if (ep.topic.includes('Government')) icon = '🏛️';
+                
+                return `
+                    <div class="episode-card" style="animation-delay: ${idx * 0.1}s">
+                        <div class="episode-icon">${icon}</div>
+                        <div class="episode-title">${ep.topic}</div>
+                        <div class="episode-meta">
+                            <div class="meta-item">📅 ${date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
+                            <div class="meta-item">🗣️ ${ep.turns_count} turns</div>
+                            <div class="meta-item">🎵 ${ep.audio_files?.length || 0} audios</div>
+                        </div>
+                        <button class="view-btn" onclick="viewEpisode('${ep.id}')">View Details →</button>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `<div class="episodes-grid">${html}</div>`;
+        }
+        
+        async function viewEpisode(episodeId) {
+            try {
+                const response = await fetch('/api/episodes');
+                const data = await response.json();
+                const episode = data.episodes.find(ep => ep.id === episodeId);
+                
+                if (!episode) return;
+                
+                currentEpisode = episode;
+                document.getElementById('detail-title').textContent = episode.topic;
+                
+                let html = `
+                    <div class="detail-section">
+                        <div class="section-title">📊 Episode Info</div>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-value">${episode.turns_count}</div>
+                                <div class="stat-label">Total Turns</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${episode.audio_files?.length || 0}</div>
+                                <div class="stat-label">Audio Files</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-value">${new Date(episode.created_at).toLocaleDateString('en-IN')}</div>
+                                <div class="stat-label">Created Date</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                if (episode.audio_files && episode.audio_files.length > 0) {
+                    html += `
+                        <div class="detail-section">
+                            <div class="section-title">🎵 Audio Playback</div>
+                            <div class="audio-players">
+                                ${episode.audio_files.map((file, i) => {
+                                    const fileUrl = file.startsWith('/tts_output/') ? file : `/tts_output/${file}`;
+                                    const lower = fileUrl.toLowerCase();
+                                    const type = lower.endsWith('.wav')
+                                        ? 'audio/wav'
+                                        : (lower.endsWith('.aiff') || lower.endsWith('.aif'))
+                                            ? 'audio/aiff'
+                                            : 'audio/mpeg';
+                                    return `
+                                    <div class="audio-item">
+                                        <div class="audio-label">Turn ${i + 1}</div>
+                                        <audio controls preload="metadata">
+                                            <source src="${fileUrl}" type="${type}">
+                                            Your browser does not support the audio element.
+                                        </audio>
+                                        <a class="audio-link" href="${fileUrl}" target="_blank" rel="noopener">Open audio</a>
+                                    </div>
+                                `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="detail-section">
+                            <div class="section-title">🎵 Audio Playback</div>
+                            <p style="color: var(--text-secondary);">No audio files for this episode. Try generating with TTS enabled.</p>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('detail-content').innerHTML = html;
+                showPage('detail');
+            } catch (error) {
+                console.error('Error viewing episode:', error);
+            }
+        }
+        
+        async function generateNewEpisode() {
+            const btn = document.getElementById('generate-btn');
+            const text = document.getElementById('generate-text');
+            const topic = document.getElementById('topic-selector').value;
+            
+            btn.disabled = true;
+            const originalText = text.textContent;
+            text.textContent = '⏳ Generating...';
+            
+            try {
+                const response = await fetch(`/generate?tts=true&topic=${topic}`, { method: 'POST' });
+                if (response.ok) {
+                    await new Promise(r => setTimeout(r, 2000));
+                    text.textContent = '✅ Complete!';
+                    await loadEpisodes();
+                    showPage('home');
+                    setTimeout(() => {
+                        text.textContent = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error('Generation failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                text.textContent = '❌ Error';
+                btn.disabled = false;
+                setTimeout(() => {
+                    text.textContent = originalText;
+                }, 3000);
+            }
+        }
+        
+        // ===== PONG GAME =====
+        let pongGame = null;
+        
+        class PongGame {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.width = canvas.width;
+                this.height = canvas.height;
+                
+                this.ball = {
+                    x: this.width / 2,
+                    y: this.height / 2,
+                    radius: 10,
+                    speedX: 2.5,
+                    speedY: 2.5,
+                    maxSpeed: 4
+                };
+                
+                this.paddle1 = {
+                    x: 20,
+                    y: this.height / 2 - 50,
+                    width: 18,
+                    height: 100,
+                    speed: 6,
+                    dy: 0
+                };
+                
+                this.paddle2 = {
+                    x: this.width - 38,
+                    y: this.height / 2 - 50,
+                    width: 18,
+                    height: 100,
+                    speed: 6,
+                    dy: 0
+                };
+                
+                this.score1 = 0;
+                this.score2 = 0;
+                this.keys = {};
+                
+                this.setupInput();
+                this.gameLoop();
+            }
+            
+            setupInput() {
+                document.addEventListener('keydown', (e) => {
+                    this.keys[e.key] = true;
+                });
+                document.addEventListener('keyup', (e) => {
+                    this.keys[e.key] = false;
+                });
+            }
+            
+            update() {
+                // Move paddles
+                if (this.keys['w'] || this.keys['W']) {
+                    this.paddle1.y = Math.max(0, this.paddle1.y - this.paddle1.speed);
+                }
+                if (this.keys['s'] || this.keys['S']) {
+                    this.paddle1.y = Math.min(this.height - this.paddle1.height, this.paddle1.y + this.paddle1.speed);
+                }
+                if (this.keys['ArrowUp']) {
+                    this.paddle2.y = Math.max(0, this.paddle2.y - this.paddle2.speed);
+                }
+                if (this.keys['ArrowDown']) {
+                    this.paddle2.y = Math.min(this.height - this.paddle2.height, this.paddle2.y + this.paddle2.speed);
+                }
+                
+                // Move ball
+                this.ball.x += this.ball.speedX;
+                this.ball.y += this.ball.speedY;
+                
+                // Ball collision with top/bottom
+                if (this.ball.y - this.ball.radius < 0 || this.ball.y + this.ball.radius > this.height) {
+                    this.ball.speedY = -this.ball.speedY;
+                    this.ball.y = Math.max(this.ball.radius, Math.min(this.height - this.ball.radius, this.ball.y));
+                }
+                
+                // Ball collision with paddles
+                if (this.ball.x - this.ball.radius < this.paddle1.x + this.paddle1.width &&
+                    this.ball.y > this.paddle1.y &&
+                    this.ball.y < this.paddle1.y + this.paddle1.height) {
+                    this.ball.speedX = Math.abs(this.ball.speedX);
+                    this.ball.x = this.paddle1.x + this.paddle1.width + this.ball.radius;
+                }
+                
+                if (this.ball.x + this.ball.radius > this.paddle2.x &&
+                    this.ball.y > this.paddle2.y &&
+                    this.ball.y < this.paddle2.y + this.paddle2.height) {
+                    this.ball.speedX = -Math.abs(this.ball.speedX);
+                    this.ball.x = this.paddle2.x - this.ball.radius;
+                }
+                
+                // Score
+                if (this.ball.x < 0) {
+                    this.score2++;
+                    this.resetBall();
+                }
+                if (this.ball.x > this.width) {
+                    this.score1++;
+                    this.resetBall();
+                }
+                
+                this.updateScore();
+            }
+            
+            resetBall() {
+                this.ball.x = this.width / 2;
+                this.ball.y = this.height / 2;
+                this.ball.speedX = (Math.random() > 0.5 ? 1 : -1) * 2.5;
+                this.ball.speedY = (Math.random() - 0.5) * 2.5;
+            }
+            
+            draw() {
+                // Clear canvas
+                this.ctx.fillStyle = 'rgba(26, 31, 58, 0.3)';
+                this.ctx.fillRect(0, 0, this.width, this.height);
+                
+                // Draw center line
+                this.ctx.strokeStyle = 'rgba(14, 165, 233, 0.2)';
+                this.ctx.setLineDash([10, 10]);
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.width / 2, 0);
+                this.ctx.lineTo(this.width / 2, this.height);
+                this.ctx.stroke();
+                this.ctx.setLineDash([]);
+                
+                // Draw tennis rackets (paddles)
+                // Left racket
+                this.drawTennisRacket(this.paddle1.x + 5, this.paddle1.y, true);
+                // Right racket
+                this.drawTennisRacket(this.paddle2.x + 5, this.paddle2.y, false);
+                
+                // Draw tennis ball
+                this.drawTennisBall(this.ball.x, this.ball.y, this.ball.radius);
+            }
+            
+            drawTennisRacket(x, y, isLeft) {
+                // Racket handle (brown wood color)
+                this.ctx.fillStyle = '#8B4513';
+                this.ctx.fillRect(x - 2, y + 80, 8, 30);
+                
+                // Racket grip
+                this.ctx.strokeStyle = '#D2B48C';
+                this.ctx.lineWidth = 2;
+                for (let i = 0; i < 4; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x - 2, y + 85 + i * 7);
+                    this.ctx.lineTo(x + 6, y + 85 + i * 7);
+                    this.ctx.stroke();
+                }
+                
+                // Racket head (string area) - oval
+                this.ctx.fillStyle = '#FFE4B5';
+                this.ctx.beginPath();
+                this.ctx.ellipse(x + 2, y + 30, 15, 35, 0, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // String pattern
+                this.ctx.strokeStyle = 'rgba(139, 69, 19, 0.3)';
+                this.ctx.lineWidth = 1;
+                for (let i = -3; i <= 3; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x + 2 + i * 3, y - 5);
+                    this.ctx.lineTo(x + 2 + i * 3, y + 65);
+                    this.ctx.stroke();
+                }
+                for (let i = -8; i <= 8; i++) {
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x - 13, y + 30 + i * 3);
+                    this.ctx.lineTo(x + 17, y + 30 + i * 3);
+                    this.ctx.stroke();
+                }
+                
+                // Racket frame
+                this.ctx.strokeStyle = '#333333';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.ellipse(x + 2, y + 30, 15, 35, 0, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+            
+            drawTennisBall(x, y, radius) {
+                // Main yellow-green ball
+                const gradient = this.ctx.createRadialGradient(x - 3, y - 3, 0, x, y, radius);
+                gradient.addColorStop(0, '#FFFF00');
+                gradient.addColorStop(1, '#ADFF2F');
+                this.ctx.fillStyle = gradient;
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Ball shadow/shine
+                this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.arc(x - 3, y - 3, radius - 2, 0, Math.PI * 2);
+                this.ctx.stroke();
+                
+                // Tennis ball seams (curved lines)
+                this.ctx.strokeStyle = '#FFFFFF';
+                this.ctx.lineWidth = 1.5;
+                
+                // Curved seam 1
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius - 2, Math.PI * 0.15, Math.PI * 0.4);
+                this.ctx.stroke();
+                
+                // Curved seam 2
+                this.ctx.beginPath();
+                this.ctx.arc(x, y, radius - 2, Math.PI * 1.6, Math.PI * 1.85);
+                this.ctx.stroke();
+            }
+            
+            updateScore() {
+                document.getElementById('score-display').textContent = `Player 1: ${this.score1} | Player 2: ${this.score2}`;
+            }
+            
+            gameLoop() {
+                this.update();
+                this.draw();
+                requestAnimationFrame(() => this.gameLoop());
+            }
+        }
+        
+        // Initialize Pong when page loads
+        function initPong() {
+            const canvas = document.getElementById('pongCanvas');
+            if (canvas && !pongGame) {
+                pongGame = new PongGame(canvas);
+            }
+        }
+        
+        // Update showPage to initialize Pong when switching to pong page
+        const originalShowPage = showPage;
+        showPage = function(pageId) {
+            originalShowPage(pageId);
+            if (pageId === 'pong') {
+                setTimeout(initPong, 100);
+            }
+        };
+        
+        window.addEventListener('load', loadEpisodes);
+        updateTopicDescription();
+    </script>
+</body>
+</html>
