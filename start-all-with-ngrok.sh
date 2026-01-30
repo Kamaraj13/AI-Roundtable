@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# start-all-with-ngrok.sh - Start server + ngrok and print public URL
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+echo "🚀 Starting AI Roundtable + ngrok"
+
+# Start server in background if not already running
+if ! pgrep -f "uvicorn app.main:app" >/dev/null; then
+    echo "🎙️  Starting server in background..."
+    nohup "$SCRIPT_DIR/start-all.sh" > server.log 2>&1 &
+    sleep 3
+else
+    echo "✅ Server already running"
+fi
+
+# Start ngrok in background if not already running
+if ! pgrep -f "ngrok" >/dev/null; then
+    echo "🌐 Starting ngrok in background..."
+    nohup "$SCRIPT_DIR/start-ngrok-tunnel.sh" > ngrok.log 2>&1 &
+    sleep 3
+else
+    echo "✅ ngrok already running"
+fi
+
+# Wait for ngrok API to be available and print public URL
+echo "🔎 Fetching ngrok URL..."
+for i in {1..10}; do
+    if curl -s http://127.0.0.1:4040/api/tunnels >/dev/null 2>&1; then
+        break
+    fi
+    sleep 1
+done
+
+PUBLIC_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 - <<'PY'
+import json,sys
+try:
+    data=json.load(sys.stdin)
+    for t in data.get("tunnels", []):
+        if t.get("public_url"):
+            print(t.get("public_url"))
+            break
+except Exception:
+    pass
+PY
+)
+
+if [ -n "$PUBLIC_URL" ]; then
+    echo "✅ Public URL: $PUBLIC_URL"
+    echo "🌍 Open: $PUBLIC_URL/ui"
+else
+    echo "⚠️  Could not determine ngrok URL. Check logs:"
+    echo "   - tail -f ngrok.log"
+    echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
+fi
