@@ -35,7 +35,7 @@ fi
 
 # Wait for ngrok API to be available and print public URL
 echo "🔎 Fetching ngrok URL..."
-for i in {1..10}; do
+for i in {1..20}; do
     if curl -s http://127.0.0.1:4040/api/tunnels >/dev/null 2>&1; then
         break
     fi
@@ -59,37 +59,7 @@ if [ -n "$PUBLIC_URL" ]; then
     echo "✅ Public URL: $PUBLIC_URL"
     echo "🌍 Open: $PUBLIC_URL/ui"
 else
-    echo "⚠️  Could not determine ngrok URL. Restarting ngrok..."
-    pkill -x "ngrok" >/dev/null 2>&1 || true
-    nohup "$SCRIPT_DIR/start-ngrok-tunnel.sh" > ngrok.log 2>&1 &
-    sleep 3
-
-    # Retry a few times for public_url to appear
-    for i in {1..10}; do
-        PUBLIC_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 - <<'PY'
-import json,sys
-try:
-    data=json.load(sys.stdin)
-    for t in data.get("tunnels", []):
-        if t.get("public_url"):
-            print(t.get("public_url"))
-            break
-except Exception:
-    pass
-PY
-)
-        if [ -n "$PUBLIC_URL" ]; then
-            break
-        fi
-        sleep 1
-    done
-
-    if [ -n "$PUBLIC_URL" ]; then
-        echo "✅ Public URL: $PUBLIC_URL"
-        echo "🌍 Open: $PUBLIC_URL/ui"
-    else
-        echo "⚠️  Still unable to determine ngrok URL. Check logs:"
-        echo "   - tail -f ngrok.log"
-        echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
-    fi
+    echo "⚠️  Could not determine ngrok URL. Check logs:"
+    echo "   - tail -f ngrok.log"
+    echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
 fi
