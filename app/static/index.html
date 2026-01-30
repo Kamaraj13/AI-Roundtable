@@ -520,6 +520,18 @@
             margin-bottom: 8px;
             font-weight: 600;
         }
+
+        .audio-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.85em;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .audio-link:hover {
+            text-decoration: underline;
+        }
         
         audio {
             width: 100%;
@@ -975,18 +987,33 @@
                         <div class="detail-section">
                             <div class="section-title">🎵 Audio Playback</div>
                             <div class="audio-players">
-                                ${episode.audio_files.map((file, i) => `
+                                ${episode.audio_files.map((file, i) => {
+                                    const fileUrl = file.startsWith('/tts_output/') ? file : `/tts_output/${file}`;
+                                    const lower = fileUrl.toLowerCase();
+                                    const type = lower.endsWith('.wav')
+                                        ? 'audio/wav'
+                                        : (lower.endsWith('.aiff') || lower.endsWith('.aif'))
+                                            ? 'audio/aiff'
+                                            : 'audio/mpeg';
+                                    return `
                                     <div class="audio-item">
                                         <div class="audio-label">Turn ${i + 1}</div>
                                         <audio controls preload="metadata">
-                                            <source src="${file}" type="audio/wav">
-                                            <source src="${file}" type="audio/x-aiff">
-                                            <source src="${file}" type="audio/aiff">
+                                            <source src="${fileUrl}" type="${type}">
                                             Your browser does not support the audio element.
                                         </audio>
+                                        <a class="audio-link" href="${fileUrl}" target="_blank" rel="noopener">Open audio</a>
                                     </div>
-                                `).join('')}
+                                `;
+                                }).join('')}
                             </div>
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div class="detail-section">
+                            <div class="section-title">🎵 Audio Playback</div>
+                            <p style="color: var(--text-secondary);">No audio files for this episode. Try generating with TTS enabled.</p>
                         </div>
                     `;
                 }
