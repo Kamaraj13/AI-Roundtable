@@ -45,7 +45,7 @@ async def speak_text(text, accent, folder="tts_output"):
     timestamp = int(time.time() * 1000)
     
     if is_macos():
-        # macOS: use native 'say' command with AIFF format
+        # macOS: use native 'say' command with AIFF format (for local testing only)
         filename = f"{timestamp}.aiff"
         filepath = os.path.join(folder, filename)
         voice = resolve_voice(accent)
