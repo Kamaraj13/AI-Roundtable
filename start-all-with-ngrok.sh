@@ -60,11 +60,13 @@ if [ -n "$PUBLIC_URL" ]; then
     echo "🌍 Open: $PUBLIC_URL/ui"
 else
     echo "⚠️  Could not determine ngrok URL. Restarting ngrok..."
-    pkill -f "ngrok" >/dev/null 2>&1 || true
+    pkill -x "ngrok" >/dev/null 2>&1 || true
     nohup "$SCRIPT_DIR/start-ngrok-tunnel.sh" > ngrok.log 2>&1 &
     sleep 3
 
-    PUBLIC_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 - <<'PY'
+    # Retry a few times for public_url to appear
+    for i in {1..10}; do
+        PUBLIC_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 - <<'PY'
 import json,sys
 try:
     data=json.load(sys.stdin)
@@ -76,6 +78,11 @@ except Exception:
     pass
 PY
 )
+        if [ -n "$PUBLIC_URL" ]; then
+            break
+        fi
+        sleep 1
+    done
 
     if [ -n "$PUBLIC_URL" ]; then
         echo "✅ Public URL: $PUBLIC_URL"
