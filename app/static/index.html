@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎙️ AI Roundtable - Podcast Episodes</title>
+    <link rel="icon" href="/static/assets/favicon.ico" />
+    <link rel="apple-touch-icon" href="/static/assets/app-icon.png" />
+    <meta property="og:title" content="AI Roundtable" />
+    <meta property="og:description" content="Intelligent panel discussions powered by AI." />
+    <meta property="og:image" content="/static/assets/social-card.jpg" />
     <style>
         * {
             margin: 0;
@@ -102,6 +107,14 @@
             letter-spacing: -1px;
             cursor: pointer;
             transition: transform 0.3s;
+        }
+
+        .logo-mark {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
         }
         
         .logo:hover {
@@ -228,6 +241,48 @@
             margin-bottom: 50px;
             animation: slideInLeft 0.6s ease-out 0.1s both;
         }
+
+        .hero {
+            position: relative;
+            border-radius: 22px;
+            padding: 48px 42px;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(16, 185, 129, 0.15));
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('/static/assets/hero.jpg') center/cover no-repeat;
+            opacity: 0.18;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
+        }
+
+        .hero-title {
+            font-size: 3.2em;
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #0ea5e9, #10b981, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.15em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
         
         .header h1 {
             font-size: 3.5em;
@@ -322,6 +377,39 @@
             font-size: 1.05em;
             line-height: 1.6;
             margin: 8px 0;
+        }
+
+        .topic-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin: 24px 0 10px;
+        }
+
+        .topic-card {
+            background: rgba(26, 31, 58, 0.55);
+            border: 1px solid rgba(14, 165, 233, 0.2);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            text-align: center;
+            min-height: 180px;
+        }
+
+        .topic-card img {
+            width: 100%;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .topic-card span {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: var(--text-primary);
         }
         
         /* ===== EPISODES GRID ===== */
@@ -695,7 +783,10 @@
     <div class="app">
         <!-- SIDEBAR NAVIGATION -->
         <div class="sidebar">
-            <div class="logo" onclick="showPage('home')">🎙️ AI Roundtable</div>
+            <div class="logo" onclick="showPage('home')">
+                <img class="logo-mark" src="/static/assets/logo.png" alt="AI Roundtable" onerror="this.style.display='none'" />
+                <span>AI Roundtable</span>
+            </div>
             
             <div class="nav-section">
                 <div class="nav-title">Navigation</div>
@@ -723,9 +814,16 @@
         <div class="content">
             <!-- HOME PAGE -->
             <div id="home" class="page active">
+                <div class="hero">
+                    <div class="hero-content">
+                        <div class="hero-title">AI Roundtable</div>
+                        <div class="hero-subtitle">Intelligent panel discussions powered by AI. Generate fresh episodes across tech, travel, finance, and more — with multi-voice audio.</div>
+                    </div>
+                </div>
+
                 <div class="header">
                     <h1>Podcast Episodes</h1>
-                    <p>Intelligent panel discussions powered by AI</p>
+                    <p>Browse and play your latest AI conversations</p>
                 </div>
                 
                 <div id="episodes-container"></div>
@@ -738,7 +836,7 @@
                     <p>Generate a new AI-powered discussion</p>
                 </div>
                 
-                <div style="max-width: 600px;">
+                <div style="max-width: 860px;">
                     <div class="topic-selector-container">
                         <select id="topic-selector" onchange="updateTopicDescription()">
                             <option value="government_jobs">🏛️ Government Jobs & Exams</option>
@@ -751,6 +849,29 @@
                     
                     <div class="topic-description" id="topic-description">
                         <p>🎭 4 Experts Discuss: UPSC, SSC, State PSC, Banking Exams & Career Paths in India</p>
+                    </div>
+
+                    <div class="topic-cards">
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_government_jobs.jpg" alt="Government Jobs" onerror="this.style.display='none'" />
+                            <span>🏛️ Government Jobs</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_travel.jpg" alt="Travel" onerror="this.style.display='none'" />
+                            <span>✈️ Travel</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_tech_startup.jpg" alt="Tech Startups" onerror="this.style.display='none'" />
+                            <span>💻 Tech Startups</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_personal_finance.jpg" alt="Personal Finance" onerror="this.style.display='none'" />
+                            <span>💰 Personal Finance</span>
+                        </div>
+                        <div class="topic-card">
+                            <img src="/static/assets/topic_mental_health.jpg" alt="Mental Health" onerror="this.style.display='none'" />
+                            <span>🧠 Mental Health</span>
+                        </div>
                     </div>
                     
                     <button class="btn" onclick="generateNewEpisode()" id="generate-btn">

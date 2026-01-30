@@ -1,0 +1,63 @@
+{
+  "brand": {
+    "logo": {
+      "filename": "logo.png",
+      "recommendedSize": "512x512",
+      "notes": "Square logo with transparent background if possible"
+    },
+    "appIcon": {
+      "filename": "app-icon.png",
+      "recommendedSize": "1024x1024",
+      "notes": "Used for Apple touch icon and future PWA"
+    },
+    "favicon": {
+      "filename": "favicon.ico",
+      "recommendedSize": "32x32",
+      "notes": "Export from logo in Adobe Express"
+    }
+  },
+  "hero": {
+    "filename": "hero.jpg",
+    "recommendedSize": "1600x700",
+    "notes": "Landing banner background"
+  },
+  "topicCards": [
+    {
+      "filename": "topic_government_jobs.jpg",
+      "recommendedSize": "800x800",
+      "topic": "government_jobs"
+    },
+    {
+      "filename": "topic_travel.jpg",
+      "recommendedSize": "800x800",
+      "topic": "travel"
+    },
+    {
+      "filename": "topic_tech_startup.jpg",
+      "recommendedSize": "800x800",
+      "topic": "tech_startup"
+    },
+    {
+      "filename": "topic_personal_finance.jpg",
+      "recommendedSize": "800x800",
+      "topic": "personal_finance"
+    },
+    {
+      "filename": "topic_mental_health.jpg",
+      "recommendedSize": "800x800",
+      "topic": "mental_health"
+    }
+  ],
+  "social": {
+    "socialCard": {
+      "filename": "social-card.jpg",
+      "recommendedSize": "1200x630",
+      "notes": "Open Graph share preview"
+    },
+    "podcastCover": {
+      "filename": "podcast-cover.jpg",
+      "recommendedSize": "3000x3000",
+      "notes": "Spotify/Apple Podcasts cover"
+    }
+  }
+}
