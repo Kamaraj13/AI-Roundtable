@@ -25,7 +25,7 @@ else
 fi
 
 # Start ngrok in background if not already running
-if ! pgrep -f "ngrok" >/dev/null; then
+if ! pgrep -x "ngrok" >/dev/null; then
     echo "🌐 Starting ngrok in background..."
     nohup "$SCRIPT_DIR/start-ngrok-tunnel.sh" > ngrok.log 2>&1 &
     sleep 3
@@ -59,7 +59,37 @@ if [ -n "$PUBLIC_URL" ]; then
     echo "✅ Public URL: $PUBLIC_URL"
     echo "🌍 Open: $PUBLIC_URL/ui"
 else
-    echo "⚠️  Could not determine ngrok URL. Check logs:"
-    echo "   - tail -f ngrok.log"
-    echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
+    echo "⚠️  ngrok URL missing. Restarting ngrok..."
+    pkill -x "ngrok" >/dev/null 2>&1 || true
+    nohup "$SCRIPT_DIR/start-ngrok-tunnel.sh" > ngrok.log 2>&1 &
+    sleep 3
+
+    # Retry until public_url appears
+    for i in {1..20}; do
+        PUBLIC_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 - <<'PY'
+import json,sys
+try:
+    data=json.load(sys.stdin)
+    for t in data.get("tunnels", []):
+        if t.get("public_url"):
+            print(t.get("public_url"))
+            break
+except Exception:
+    pass
+PY
+)
+        if [ -n "$PUBLIC_URL" ]; then
+            break
+        fi
+        sleep 1
+    done
+
+    if [ -n "$PUBLIC_URL" ]; then
+        echo "✅ Public URL: $PUBLIC_URL"
+        echo "🌍 Open: $PUBLIC_URL/ui"
+    else
+        echo "⚠️  Still no URL. Check logs:"
+        echo "   - tail -f ngrok.log"
+        echo "   - curl -s http://127.0.0.1:4040/api/tunnels"
+    fi
 fi
